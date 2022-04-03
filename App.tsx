@@ -7,7 +7,7 @@
  *
  * @format
  */
-
+import 'react-native-gesture-handler';
 import React from 'react';
 import {
   SafeAreaView, 
@@ -19,24 +19,44 @@ import {
 import HomeScreen from './src/components/screens/HomeScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import SubmitStoryForm from './src/components/forms/SubmitStoryForm'; 
 
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
+const Root = () => {
+
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name='Home'
+        component={HomeScreen} 
+      />
+      
+    </Stack.Navigator>
+  )
+}
 const App = () => {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator
+      <Tab.Navigator
         initialRouteName='Home'
         >
-        <Stack.Screen 
-          name='Home'
-          component={HomeScreen}
+        <Tab.Screen 
+          name='Root'
+          component={Root}
           options={{
-            headerTintColor:'#000'
+            headerTintColor:'#000',
+            headerShown:false
           }}
         />
-      </Stack.Navigator>
+        <Tab.Screen 
+          name='Submit'
+          component={SubmitStoryForm}  
+        />
+      </Tab.Navigator>
     </NavigationContainer>
   );
 };
