@@ -11,9 +11,15 @@ import Carousel, {ICarouselInstance} from 'react-native-reanimated-carousel';
 
 const PAGE_WIDTH = Dimensions.get('window').width - 20;
 
-class RecommendedStoriesList extends React.Component<{}, {}> {
+interface State {
+    data: object,
+    selected: number
+}
+
+class RecommendedStoriesList extends React.Component<{}, State> {
  
     private carouselRef = React.createRef<ICarouselInstance>();
+
     constructor(props:any) {
         super(props)
         this.state = {
@@ -40,7 +46,7 @@ class RecommendedStoriesList extends React.Component<{}, {}> {
                     onPress={() => {
                         this.carouselRef.current?.goToIndex(i,true); 
                     }}
-                    style={styles.indicator}
+                    style={this.state.selected == i ? styles.selectedIndicator : styles.indicator}
                 /> 
             );
         }
@@ -52,21 +58,27 @@ class RecommendedStoriesList extends React.Component<{}, {}> {
         )
     }
 
+    componentDidMount() {
+
+        
+    }
+
     render() {
 
         return (
             <SafeAreaView style={styles.container}>
                 <Text style={styles.heading}>Recommneded for you!</Text>
                 <View style={styles.listContainer}>
-
                 </View> 
                 <Carousel   
                     ref={this.carouselRef}
                     autoPlay={true} 
-                    loop
+                    loop={true}
+                    snapEnabled={true}
                     width={PAGE_WIDTH - 20}
                     autoPlayInterval={5000} 
-                    height={143}
+                    onScrollEnd={(prev, next) => this.setState({selected:next})}
+                    height={142} 
                     data={[1, 2, 3]}
                     renderItem={({ item }) => (
                         <View style={styles.listItem}>
@@ -87,16 +99,16 @@ class RecommendedStoriesList extends React.Component<{}, {}> {
 
 const styles = StyleSheet.create({
     indicator: {
-        width:12,
-        height:12,
+        width:18,
+        height:8,
         marginRight:5,
         marginLeft:5,
         borderRadius:12,
         backgroundColor:"#fff"
     },
     selectedIndicator: {
-        width:20,
-        height:10,
+        width:18,
+        height:8,
         marginRight:3,
         marginLeft:3,
         borderRadius:5,
@@ -115,7 +127,7 @@ const styles = StyleSheet.create({
         paddingLeft:10 
     },
     heading: {
-        fontSize:18,
+        fontSize:20,
         marginBottom:10
     },
     listContainer: {  

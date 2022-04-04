@@ -13,6 +13,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import LinearGradient from 'react-native-linear-gradient';
 
 const Tab = createBottomTabNavigator();
+const images = {
+    prutas: require('../../assets/images/categories/fruit.jpg'),
+    hayop: require('../../assets/images/categories/hayop.jpg'),
+    tao: require('../../assets/images/categories/tao.jpg')
+}
 
 class HomeScreen extends React.Component {
 
@@ -23,58 +28,37 @@ class HomeScreen extends React.Component {
             </View>
         )
     }
+
+    categoryThumbnail(title:string, image:any) {
+
+        return ( 
+            <View style={styles.genreItem}>
+                <LinearGradient 
+                    start={{x: 0, y: 1}} 
+                    end={{x: 0, y: 0.35}} 
+                    colors={['rgba(0,0,0,0.75)', 'transparent']}
+                    style={styles.genreImage}
+                    >
+                    <Image
+                        source={image}
+                        style={styles.catImage}
+                    />
+                    <Text style={styles.catName}>{title}</Text>   
+                </LinearGradient>   
+            </View>
+        )
+    }
  
     genresSection = (title:string) => { 
         return (
             <View>
                 <View style={styles.container}>
-                    <Text style={styles.heading}>{title}</Text>
-                    
-                </View>
-                
-                <View style={styles.GenresSectionContainer}>
-                    <View style={styles.genreItem}>
-                        <LinearGradient 
-                            start={{x: 0, y: 1}} 
-                            end={{x: 0, y: 0.35}} 
-                            colors={['rgba(0,0,0,0.75)', 'transparent']}
-                            style={styles.genreImage}
-                            >
-                            <Image
-                                source={require('../../assets/images/categories/fruit.jpg')}
-                                style={styles.catImage}
-                            />
-                            <Text style={styles.catName}>Prutas</Text>   
-                        </LinearGradient>   
-                    </View>
-                    <View style={styles.genreItem}> 
-                        <LinearGradient 
-                            start={{x: 0, y: 1}} 
-                            end={{x: 0, y: 0.35}} 
-                            colors={['rgba(0,0,0,0.75)', 'transparent']}
-                            style={styles.genreImage}
-                            >
-                            <Image
-                                source={require('../../assets/images/categories/hayop.jpg')}
-                                style={styles.catImage}
-                            />
-                            <Text style={styles.catName}>Hayop</Text>   
-                        </LinearGradient> 
-                    </View>
-                    <View style={styles.genreItem}>
-                        <LinearGradient 
-                            start={{x: 0, y: 1}} 
-                            end={{x: 0, y: 0.35}} 
-                            colors={['rgba(0,0,0,0.75)', 'transparent']}
-                            style={styles.genreImage}
-                            >
-                            <Image
-                                source={require('../../assets/images/categories/tao.jpg')}
-                                style={styles.catImage}
-                            />
-                            <Text style={styles.catName}>Tao</Text>   
-                        </LinearGradient> 
-                    </View> 
+                    <Text style={styles.heading}>{title}</Text> 
+                </View> 
+                <View style={styles.GenresSectionContainer}> 
+                    { this.categoryThumbnail('Prutas', images.prutas) } 
+                    { this.categoryThumbnail('Hayop', images.hayop) } 
+                    { this.categoryThumbnail('Tao', images.tao) } 
                 </View>
             </View>
         )
@@ -87,6 +71,20 @@ class HomeScreen extends React.Component {
                 <ScrollView>
                     {this.genresSection('Categories')} 
                     <RecommendedStoriesList />
+                    <View style={styles.container}> 
+                        <Text style={styles.heading}>Recently Added</Text>
+                    </View>
+                    <View style={styles.storyWrapper}>
+                        <View style={styles.storyItem}>
+                            <View style={styles.storyImage}></View>
+                        </View>
+                        <View style={styles.storyItem}>
+                            <View style={styles.storyImage}></View>
+                        </View>
+                        <View style={styles.storyItem}>
+                            <View style={styles.storyImage}></View>
+                        </View>
+                    </View>
                 </ScrollView>
             </SafeAreaView>
         )
@@ -94,9 +92,24 @@ class HomeScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
+    storyImage: {
+        height:125,
+        backgroundColor:"#fff",
+        borderRadius:10
+    },
+    storyItem: { 
+        width:'50%',
+        paddingRight:10,
+        paddingLeft:10
+    },
+    storyWrapper: {
+        display:'flex',
+        flexDirection:'row',
+        padding:10
+    },
     container: { 
         paddingLeft:20,
-        paddingRight:20
+        paddingRight:20,
     },
     heading: {
         fontSize:20,

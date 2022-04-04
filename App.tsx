@@ -43,14 +43,31 @@ const App = () => {
     <NavigationContainer>
       <Tab.Navigator
         initialRouteName='Home'
+        screenOptions={({route}) => ({
+          tabBarIcon: () => {
+            let images = [
+              require('./src/assets/images/home.png'),
+              require('./src/assets/images/edit.png')
+            ];
+            let index = route.name == "Root" ? 0 : 1;
+            return <Image style={styles.tabIcon} source={images[index]} />
+          },
+          tabBarLabelStyle: {
+            margin:0,
+            fontSize:12
+          }
+        })}
         >
         <Tab.Screen 
           name='Root'
           component={Root}
           options={{
             headerTintColor:'#000',
-            headerShown:false
+            headerShown:false,
+            tabBarLabel:"Home"
           }}
+          
+        
         />
         <Tab.Screen 
           name='Submit'
@@ -95,6 +112,10 @@ const styles = StyleSheet.create({
   highlight: {
     fontWeight: '700',
   },
+  tabIcon: {
+    height:28,
+    width:28
+  }
 });
 
 export default App;
