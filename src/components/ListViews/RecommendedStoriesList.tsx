@@ -4,7 +4,8 @@ import {
     Text,
     StyleSheet,
     View, 
-    TouchableOpacity
+    TouchableOpacity,
+    Image
 } from "react-native";
 import { Dimensions } from 'react-native';
 import Carousel, {ICarouselInstance} from 'react-native-reanimated-carousel';
@@ -78,26 +79,77 @@ class RecommendedStoriesList extends React.Component<{}, State> {
                     width={PAGE_WIDTH - 20}
                     autoPlayInterval={5000} 
                     onScrollEnd={(prev, next) => this.setState({selected:next})}
-                    height={142} 
+                    height={405} 
                     data={[1, 2, 3]}
                     renderItem={({ item }) => (
-                        <View style={styles.listItem}>
-                            <View style={styles.imageContainer}></View>
-                            <View style={styles.descriptionContainer}>
-                                <Text style={{fontSize:20}}>{item}</Text>
-                                <Text>Lorem ipsum dolor sit, amet consectetur adipisicing elit. </Text>
-                                <Text>By: John Doe</Text>
+                        <View>
+                            <View style={styles.listItem}>
+                                <View style={styles.imageContainer}>
+                                    <Image 
+                                        style={styles.image}
+                                        source={require('../../assets/images/categories/tao.jpg')}
+                                    />
+                                </View>
+                                <View style={styles.descriptionContainer}>
+                                    <Text style={{fontSize:20}}>Alamat ng Septik Tank</Text>
+                                    <Text style={styles.excerpt}>Lorem ipsum dolor sit, amet consectetur adipisicing elit. </Text>
+                                    <Text style={styles.category}>Category: Tao</Text>
+                                </View>
+                            </View>
+                            <View style={styles.listItem}>
+                                <View style={styles.imageContainer}>
+                                    <Image 
+                                        style={styles.image}
+                                        source={require('../../assets/images/categories/hayop.jpg')}
+                                    />
+                                </View>
+                                <View style={styles.descriptionContainer}>
+                                    <Text style={{fontSize:20}}>Alamat ng Lababo</Text>
+                                    <Text style={styles.excerpt}>Lorem ipsum dolor sit, amet consectetur adipisicing elit. </Text>
+                                    <Text style={styles.category}>Category: Hayop</Text>
+                                </View>
+                            </View>
+                            <View style={styles.listItem}>
+                                <View style={styles.imageContainer}>
+                                    <Image 
+                                        style={styles.image}
+                                        source={require('../../assets/images/categories/fruit.jpg')}
+                                    />
+                                </View>
+                                <View style={styles.descriptionContainer}>
+                                    <Text style={{fontSize:20}}>Alamat ng Gintong Ngipin</Text>
+                                    <Text style={styles.excerpt}>Lorem ipsum dolor sit, amet consectetur adipisicing elit. </Text>
+                                    <Text style={styles.category}>Category: Prutas</Text>
+                                </View>
                             </View>
                         </View>
+                        
                     )}
                 />
                 {this.buttons()}
+                
             </SafeAreaView>
         );
     }
 }
 
 const styles = StyleSheet.create({
+    excerpt: {
+        fontSize:14,
+        color:'rgba(0,0,0,0.5)',
+        
+    },
+    category: {
+        color:'rgba(0,0,0,0.5)',
+        marginTop:5,
+        fontSize:13 
+    },
+    image: {
+        width:'100%',
+        height:90,
+        borderRadius:5,
+        resizeMode:'contain'
+    },
     indicator: {
         width:18,
         height:8,
@@ -118,26 +170,27 @@ const styles = StyleSheet.create({
         padding:20
     },
     imageContainer: {
-        height:90,
-        backgroundColor:"#333",
-        width:'35%'
+        width:'25%'
     },
     descriptionContainer: {
-        width:'65%',
-        paddingLeft:10 
+        width:'75%',
+        paddingLeft:15
     },
     heading: {
-        fontSize:20,
-        marginBottom:10
+        fontSize:20
     },
     listContainer: {  
     },
     listItem: {  
-        backgroundColor:"#ffffff", 
+     
         display:'flex',
-        flexDirection:'row',
-        padding:20,
-        borderRadius:10
+        flexDirection:'row', 
+        paddingBottom: 15,
+        paddingTop:15,
+        borderBottomColor:"#ddd",
+        borderBottomWidth:1,
+        borderRadius:10,
+        marginBottom:10
     }
 })
 

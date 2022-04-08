@@ -70,21 +70,8 @@ class HomeScreen extends React.Component {
             <SafeAreaView> 
                 <ScrollView>
                     {this.genresSection('Categories')} 
-                    <RecommendedStoriesList />
-                    <View style={styles.container}> 
-                        <Text style={styles.heading}>Recently Added</Text>
-                    </View>
-                    <View style={styles.storyWrapper}>
-                        <View style={styles.storyItem}>
-                            <View style={styles.storyImage}></View>
-                        </View>
-                        <View style={styles.storyItem}>
-                            <View style={styles.storyImage}></View>
-                        </View>
-                        <View style={styles.storyItem}>
-                            <View style={styles.storyImage}></View>
-                        </View>
-                    </View>
+                    <RecommendedStoriesList /> 
+                    <RecommendedStoriesList /> 
                 </ScrollView>
             </SafeAreaView>
         )
@@ -99,20 +86,20 @@ const styles = StyleSheet.create({
     },
     storyItem: { 
         width:'50%',
-        paddingRight:10,
-        paddingLeft:10
+        paddingRight:5,
+        paddingLeft:5, 
     },
     storyWrapper: {
         display:'flex',
         flexDirection:'row',
-        padding:10
+        padding:15
     },
     container: { 
         paddingLeft:20,
         paddingRight:20,
     },
     heading: {
-        fontSize:20,
+        fontSize:20, 
         marginTop:10,
         marginBottom:10
     },
