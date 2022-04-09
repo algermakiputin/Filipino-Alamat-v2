@@ -73,7 +73,7 @@ class RecommendedStoriesList extends React.Component<{}, State> {
                 </View> 
                 <Carousel   
                     ref={this.carouselRef}
-                    autoPlay={true} 
+                    autoPlay={false} 
                     loop={true}
                     snapEnabled={true}
                     width={PAGE_WIDTH - 20}
@@ -91,7 +91,7 @@ class RecommendedStoriesList extends React.Component<{}, State> {
                                     />
                                 </View>
                                 <View style={styles.descriptionContainer}>
-                                    <Text style={{fontSize:20}}>Alamat ng Septik Tank</Text>
+                                    <Text style={styles.listTitle}>Alamat ng Septik Tank</Text>
                                     <Text style={styles.excerpt}>Lorem ipsum dolor sit, amet consectetur adipisicing elit. </Text>
                                     <Text style={styles.category}>Category: Tao</Text>
                                 </View>
@@ -104,7 +104,7 @@ class RecommendedStoriesList extends React.Component<{}, State> {
                                     />
                                 </View>
                                 <View style={styles.descriptionContainer}>
-                                    <Text style={{fontSize:20}}>Alamat ng Lababo</Text>
+                                    <Text style={styles.listTitle}>Alamat ng Lababo</Text>
                                     <Text style={styles.excerpt}>Lorem ipsum dolor sit, amet consectetur adipisicing elit. </Text>
                                     <Text style={styles.category}>Category: Hayop</Text>
                                 </View>
@@ -117,7 +117,7 @@ class RecommendedStoriesList extends React.Component<{}, State> {
                                     />
                                 </View>
                                 <View style={styles.descriptionContainer}>
-                                    <Text style={{fontSize:20}}>Alamat ng Gintong Ngipin</Text>
+                                    <Text style={styles.listTitle}>Alamat ng Gintong Ngipin</Text>
                                     <Text style={styles.excerpt}>Lorem ipsum dolor sit, amet consectetur adipisicing elit. </Text>
                                     <Text style={styles.category}>Category: Prutas</Text>
                                 </View>
@@ -151,18 +151,18 @@ const styles = StyleSheet.create({
         resizeMode:'contain'
     },
     indicator: {
-        width:18,
-        height:8,
+        width:25,
+        height:10,
         marginRight:5,
         marginLeft:5,
         borderRadius:12,
         backgroundColor:"#fff"
     },
     selectedIndicator: {
-        width:18,
-        height:8,
-        marginRight:3,
-        marginLeft:3,
+        width:25,
+        height:10,
+        marginRight:5,
+        marginLeft:5,
         borderRadius:5,
         backgroundColor:"#333"
     },
@@ -177,7 +177,8 @@ const styles = StyleSheet.create({
         paddingLeft:15
     },
     heading: {
-        fontSize:20
+        fontSize:20,
+        color:"#000"
     },
     listContainer: {  
     },
@@ -191,6 +192,10 @@ const styles = StyleSheet.create({
         borderBottomWidth:1,
         borderRadius:10,
         marginBottom:10
+    },
+    listTitle: {
+        fontSize:18,
+        color:"#333"
     }
 })
 

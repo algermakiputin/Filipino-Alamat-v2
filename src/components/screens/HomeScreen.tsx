@@ -101,7 +101,8 @@ const styles = StyleSheet.create({
     heading: {
         fontSize:20, 
         marginTop:10,
-        marginBottom:10
+        marginBottom:10,
+        color:"#000"
     },
     catName: {
         position:'absolute',
