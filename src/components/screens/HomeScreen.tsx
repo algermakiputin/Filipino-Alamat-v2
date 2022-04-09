@@ -6,11 +6,13 @@ import {
     Text,
     TextInput,
     ScrollView,
-    Image
+    Image,
+    TouchableOpacity
 } from "react-native";
 import RecommendedStoriesList from "../ListViews/RecommendedStoriesList";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import LinearGradient from 'react-native-linear-gradient';
+import theme from "../../../app/styles/theme.styles";
 
 const Tab = createBottomTabNavigator();
 const images = {
@@ -19,7 +21,11 @@ const images = {
     tao: require('../../assets/images/categories/tao.jpg')
 }
 
-class HomeScreen extends React.Component {
+class HomeScreen extends React.Component<any, any> {
+
+    constructor(props:any) {
+        super(props)
+    } 
 
     searchBar = () => {
         return (
@@ -30,9 +36,10 @@ class HomeScreen extends React.Component {
     }
 
     categoryThumbnail(title:string, image:any) {
-
         return ( 
-            <View style={styles.genreItem}>
+            <TouchableOpacity style={styles.genreItem}
+                onPress={() => this.props.navigation.navigate('Category')}
+                >
                 <LinearGradient 
                     start={{x: 0, y: 1}} 
                     end={{x: 0, y: 0.35}} 
@@ -45,9 +52,9 @@ class HomeScreen extends React.Component {
                     />
                     <Text style={styles.catName}>{title}</Text>   
                 </LinearGradient>   
-            </View>
+            </TouchableOpacity>
         )
-    }
+    } 
  
     genresSection = (title:string) => { 
         return (
@@ -99,7 +106,7 @@ const styles = StyleSheet.create({
         paddingRight:20,
     },
     heading: {
-        fontSize:20, 
+        fontSize:theme.FONT_SIZE_LARGE, 
         marginTop:10,
         marginBottom:10,
         color:"#000"
