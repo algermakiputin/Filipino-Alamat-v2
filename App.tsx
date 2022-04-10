@@ -114,13 +114,15 @@ const App = () => {
           name='Category'
           component={CategoryScreen}
           options={{
-            headerStyle:{ 
-              backgroundColor:"#f0f7fe", 
+            headerStyle: {
+              backgroundColor:"#52A0FE",
             },
+            headerTintColor:'#fff',
             headerShadowVisible:false,
             contentStyle:{
               backgroundColor:"#f0f7fe",
             },
+            // headerTitleAlign:'center'
           }}
         /> 
         <Stack.Screen 

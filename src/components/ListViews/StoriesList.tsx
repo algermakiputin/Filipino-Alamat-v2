@@ -97,7 +97,8 @@ const styles = StyleSheet.create({
         resizeMode:'contain'
     }, 
     container: {
-        padding:20
+        paddingRight:20,
+        paddingLeft:20
     },
     imageContainer: {
         width:'25%'
@@ -109,6 +110,8 @@ const styles = StyleSheet.create({
     heading: {
         fontSize:theme.FONT_SIZE_LARGE,
         color:"#000", 
+        marginTop:10,
+        marginBottom:10
     }, 
     listItem: {   
         display:'flex',
