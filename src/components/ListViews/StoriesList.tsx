@@ -13,34 +13,38 @@ interface State {
     data: object,
     selected: number
 }
+ 
 
-class RecommendedStoriesList extends React.Component<{}, State> { 
+class StoriesList extends React.Component<any, State> { 
 
     constructor(props:any) {
-        super(props) 
- 
+        super(props)  
     }   
 
     render() {
 
         return (
             <SafeAreaView style={styles.container}>
-                <Text style={styles.heading}>Recommneded for you!</Text>
+                {this.props.title? (<Text style={styles.heading}>{this.props.title}</Text>): null}
                 <View>
                     <View>
-                        <View style={styles.listItem}>
-                            <View style={styles.imageContainer}>
-                                <Image 
-                                    style={styles.image}
-                                    source={require('../../assets/images/categories/tao.jpg')}
-                                />
+                        <TouchableOpacity
+                            onPress={() => this.props.navigation.navigate('Story')}
+                        >
+                            <View style={styles.listItem}>
+                                <View style={styles.imageContainer}>
+                                    <Image 
+                                        style={styles.image}
+                                        source={require('../../assets/images/categories/tao.jpg')}
+                                    />
+                                </View>
+                                <View style={styles.descriptionContainer}>
+                                    <Text style={styles.listTitle}>Alamat ng Septik Tank</Text>
+                                    <Text style={styles.excerpt}>Lorem ipsum dolor sit, amet consectetur adipisicing elit. </Text>
+                                    <Text style={styles.category}>Category: Tao</Text>
+                                </View>
                             </View>
-                            <View style={styles.descriptionContainer}>
-                                <Text style={styles.listTitle}>Alamat ng Septik Tank</Text>
-                                <Text style={styles.excerpt}>Lorem ipsum dolor sit, amet consectetur adipisicing elit. </Text>
-                                <Text style={styles.category}>Category: Tao</Text>
-                            </View>
-                        </View>
+                        </TouchableOpacity>
                         <View style={styles.listItem}>
                             <View style={styles.imageContainer}>
                                 <Image 
@@ -123,4 +127,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default RecommendedStoriesList;
+export default StoriesList;

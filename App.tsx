@@ -26,41 +26,42 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import SubmitStoryForm from './src/components/forms/SubmitStoryForm'; 
 import CategoryScreen from './src/components/screens/CategoryScreen';
 import SearchScreen from './src/components/screens/SearchScreen'; 
+import StoryPage from './src/components/screens/StoryPage';
 import { createDrawerNavigator } from '@react-navigation/drawer'; 
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator(); 
 const Drawer = createDrawerNavigator();  
 
-const tabsOptions = (navigation:any) => {
-  return {
-    headerTintColor:'#fff',
-    tabBarLabel:"Home",
-    tabBarStyle: {
-      backgroundColor:"#52A0FE"
-    },
-    headerStyle: {
-      backgroundColor:"#52A0FE"
-    },
-    headerShown:false 
-  }
-}
+const tabsOptions = (navigation:any) => ({
+  headerTintColor:'#fff',
+  tabBarLabel:"Home",
+  tabBarStyle: {
+    backgroundColor:"#52A0FE"
+  },
+  headerStyle: {
+    backgroundColor:"#52A0FE"
+  },
+  headerShown:false,
+});
+
+const TabScreenOptions = (route:any) => ({
+  tabBarIcon: () => {
+    let images = [
+      require('./src/assets/images/home.png'),
+      require('./src/assets/images/edit.png')
+    ];
+    let index = route.name == "Home" ? 0 : 1;
+    return <Image style={styles.tabIcon} source={images[index]} />
+  }, 
+  tabBarShowLabel:false
+});
 
 function HomeTabs() {
 
   return (
     <Tab.Navigator  
-      screenOptions={({route}) => ({
-        tabBarIcon: () => {
-          let images = [
-            require('./src/assets/images/home.png'),
-            require('./src/assets/images/edit.png')
-          ];
-          let index = route.name == "Home" ? 0 : 1;
-          return <Image style={styles.tabIcon} source={images[index]} />
-        }, 
-        tabBarShowLabel:false
-      })}
+      screenOptions={({route}) => TabScreenOptions(route)}
       >
       <Tab.Screen 
         name='Home' 
@@ -74,14 +75,19 @@ function HomeTabs() {
     </Tab.Navigator>
   );
 }
+
+const stackPageOptions = {
+
+}
+
 const App = () => {
 
   return (
     <NavigationContainer>
-      <Drawer.Navigator
+      <Stack.Navigator
         initialRouteName='HomeTabs'
       >
-        <Drawer.Screen 
+        <Stack.Screen 
           name='HomeTabs'
           component={HomeTabs}
           options={({navigation}) => ({ 
@@ -104,15 +110,28 @@ const App = () => {
             }
           })} 
         />
-        <Drawer.Screen 
+        <Stack.Screen 
           name='Category'
           component={CategoryScreen}
+          options={{
+            headerStyle:{ 
+              backgroundColor:"#f0f7fe", 
+            },
+            headerShadowVisible:false,
+            contentStyle:{
+              backgroundColor:"#f0f7fe",
+            },
+          }}
         /> 
-        <Drawer.Screen 
+        <Stack.Screen 
           name='Search'
           component={SearchScreen}
         />
-      </Drawer.Navigator>
+        <Stack.Screen 
+          name='Story'
+          component={StoryPage}
+        />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 };

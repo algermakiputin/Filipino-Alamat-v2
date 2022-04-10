@@ -9,7 +9,7 @@ import {
     Image,
     TouchableOpacity
 } from "react-native";
-import RecommendedStoriesList from "../ListViews/RecommendedStoriesList";
+import StoriesList from "../ListViews/StoriesList";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import LinearGradient from 'react-native-linear-gradient';
 import theme from "../../../app/styles/theme.styles"; 
@@ -71,14 +71,19 @@ class HomeScreen extends React.Component<any, any> {
         )
     }
 
-    render() {
-
+    render() { 
         return (
-            <SafeAreaView> 
+            <SafeAreaView style={{backgroundColor:"#f0f7fe"}}> 
                 <ScrollView>
                     {this.genresSection('Categories')} 
-                    <RecommendedStoriesList /> 
-                    <RecommendedStoriesList /> 
+                    <StoriesList 
+                        title="Recommended For You!" 
+                        navigation={this.props.navigation} 
+                        /> 
+                    <StoriesList 
+                        title="Recently Added" 
+                        navigation={this.props.navigation} 
+                        /> 
                 </ScrollView>
             </SafeAreaView>
         )
@@ -106,8 +111,7 @@ const styles = StyleSheet.create({
         paddingRight:20,
     },
     heading: {
-        fontSize:theme.FONT_SIZE_SMALL, 
-        fontFamily:'Poppins-Regular',
+        fontSize:theme.FONT_SIZE_LARGE,  
         marginTop:10,
         marginBottom:10,
         color:"#000"
