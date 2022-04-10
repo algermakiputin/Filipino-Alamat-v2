@@ -1,9 +1,12 @@
 import React from "react";
 
-class SubmitStoryForm extends React.Component {
+class SubmitStoryForm extends React.Component<any, any> {
 
+    constructor(props:any) {
+        super(props);
+    } 
+    
     render() {
-
         return null
     }
 

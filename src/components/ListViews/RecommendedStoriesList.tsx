@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     },
     heading: {
         fontSize:theme.FONT_SIZE_LARGE,
-        color:"#000"
+        color:"#000", 
     }, 
     listItem: {   
         display:'flex',
@@ -118,7 +118,8 @@ const styles = StyleSheet.create({
     },
     listTitle: {
         fontSize:theme.FONT_SIZE_MEDIUM,
-        color:"#333"
+        color:"#333",
+        fontFamily:'Poppings-ThinItalic'
     }
 })
 

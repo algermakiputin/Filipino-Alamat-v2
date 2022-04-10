@@ -16,18 +16,21 @@ import {
   TextInput,
   Image,
   View,
-  TouchableOpacity
+  TouchableOpacity,
+  Alert
 } from 'react-native';  
 import HomeScreen from './src/components/screens/HomeScreen';
-import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
+import { NavigationContainer, useRoute } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import SubmitStoryForm from './src/components/forms/SubmitStoryForm'; 
 import CategoryScreen from './src/components/screens/CategoryScreen';
 import SearchScreen from './src/components/screens/SearchScreen'; 
+import { createDrawerNavigator } from '@react-navigation/drawer'; 
 
 const Stack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();  
+const Tab = createBottomTabNavigator(); 
+const Drawer = createDrawerNavigator();  
 
 const tabsOptions = (navigation:any) => {
   return {
@@ -39,26 +42,14 @@ const tabsOptions = (navigation:any) => {
     headerStyle: {
       backgroundColor:"#52A0FE"
     },
-    headerRight:() => {
-      return(
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Search')}
-        >
-          <Image 
-            style={{width:22,height:22,marginRight:20}}
-            source={require('./src/assets/images/search.png')} 
-          />
-        </TouchableOpacity>
-      )
-    }
+    headerShown:false 
   }
 }
 
 function HomeTabs() {
 
   return (
-    <Tab.Navigator 
-      initialRouteName='Home'
+    <Tab.Navigator  
       screenOptions={({route}) => ({
         tabBarIcon: () => {
           let images = [
@@ -87,27 +78,41 @@ const App = () => {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen 
+      <Drawer.Navigator
+        initialRouteName='HomeTabs'
+      >
+        <Drawer.Screen 
           name='HomeTabs'
           component={HomeTabs}
-          options={{
+          options={({navigation}) => ({ 
+            title:'Filipino Alamat V2',
             headerStyle: {
               backgroundColor:"#52A0FE",
             },
-            headerTintColor:"#ffffff",
-            headerShown:false, 
-          }} 
+            headerTintColor:"#ffffff", 
+            headerRight: () => { 
+              return(
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Search')}
+                >
+                  <Image 
+                    style={{width:22,height:22,marginRight:20}}
+                    source={require('./src/assets/images/search.png')} 
+                  />
+                </TouchableOpacity>
+              )
+            }
+          })} 
         />
-        <Stack.Screen 
+        <Drawer.Screen 
           name='Category'
           component={CategoryScreen}
         /> 
-        <Stack.Screen 
+        <Drawer.Screen 
           name='Search'
           component={SearchScreen}
         />
-      </Stack.Navigator>
+      </Drawer.Navigator>
     </NavigationContainer>
   );
 };

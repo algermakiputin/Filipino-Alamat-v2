@@ -12,7 +12,7 @@ import {
 import RecommendedStoriesList from "../ListViews/RecommendedStoriesList";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import LinearGradient from 'react-native-linear-gradient';
-import theme from "../../../app/styles/theme.styles";
+import theme from "../../../app/styles/theme.styles"; 
 
 const Tab = createBottomTabNavigator();
 const images = {
@@ -106,7 +106,8 @@ const styles = StyleSheet.create({
         paddingRight:20,
     },
     heading: {
-        fontSize:theme.FONT_SIZE_LARGE, 
+        fontSize:theme.FONT_SIZE_SMALL, 
+        fontFamily:'Poppins-Regular',
         marginTop:10,
         marginBottom:10,
         color:"#000"
