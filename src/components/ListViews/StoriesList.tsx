@@ -82,7 +82,7 @@ class StoriesList extends React.Component<any, State> {
 const styles = StyleSheet.create({
     excerpt: {
         fontSize:theme.FONT_SIZE_SMALL,
-        color:'rgba(0,0,0,0.5)',
+        color:'#999999',
         
     },
     category: {
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     },
     heading: {
         fontSize:theme.FONT_SIZE_LARGE,
-        color:"#000", 
+        color:theme.headingColor, 
         marginTop:10,
         marginBottom:10
     }, 
@@ -125,8 +125,9 @@ const styles = StyleSheet.create({
     },
     listTitle: {
         fontSize:theme.FONT_SIZE_MEDIUM,
-        color:"#333",
-        fontFamily:'Poppings-ThinItalic'
+        color:theme.headingColor,
+        fontFamily:'Poppings-ThinItalic',
+        marginBottom:5
     }
 })
 

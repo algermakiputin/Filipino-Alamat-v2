@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
         fontSize:theme.FONT_SIZE_LARGE,  
         marginTop:10,
         marginBottom:10,
-        color:"#000"
+        color:theme.headingColor
     },
     catName: {
         position:'absolute',

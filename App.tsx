@@ -122,7 +122,7 @@ const App = () => {
             contentStyle:{
               backgroundColor:"#f0f7fe",
             },
-            // headerTitleAlign:'center'
+            headerTitleAlign:'center'
           }}
         /> 
         <Stack.Screen 

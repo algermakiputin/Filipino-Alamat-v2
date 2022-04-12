@@ -5,7 +5,8 @@ import {
     SafeAreaView,
     Image,
     ScrollView,
-    Text
+    Text,
+    TextInput
 } from 'react-native';
 import StoriesList from '../ListViews/StoriesList';
 import themeStyles from '../../../app/styles/theme.styles';
@@ -16,7 +17,11 @@ class CategoryScreen extends React.Component<any,any> {
 
         return (
             <SafeAreaView>
-                <View style={styles.container}>
+                <View style={styles.container}> 
+                    <TextInput 
+                        style={styles.searchbox}
+                        placeholder="Search..."
+                    />
                     <Text style={styles.heading}>Mga alamat tungkol sa Tao</Text> 
                     
                 </View>
@@ -42,6 +47,15 @@ const styles = StyleSheet.create({
         display:'flex',
         justifyContent:'center', 
         height:210
+    },
+    searchbox: {
+        backgroundColor:"#ffffff",
+        marginTop:15,
+        borderColor:"#999999",
+        borderWidth:1,
+        borderRadius:10,
+        paddingLeft:15,
+        height:45
     },
     heading: {
         fontSize:themeStyles.FONT_SIZE_MEDIUM,
