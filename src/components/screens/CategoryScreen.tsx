@@ -21,6 +21,7 @@ class CategoryScreen extends React.Component<any,any> {
                     <TextInput 
                         style={styles.searchbox}
                         placeholder="Search..."
+                        placeholderTextColor={"#333"}
                     />
                     <Text style={styles.heading}>Mga alamat tungkol sa Tao</Text> 
                     
@@ -59,9 +60,9 @@ const styles = StyleSheet.create({
     },
     heading: {
         fontSize:themeStyles.FONT_SIZE_MEDIUM,
-        color:"#000", 
+        color:themeStyles.headingColor, 
         marginTop:15,
-        marginBottom:10
+        marginBottom:10, 
     }, 
     cover: {
         width:'100%',

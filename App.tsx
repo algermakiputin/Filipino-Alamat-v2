@@ -27,6 +27,7 @@ import SubmitStoryForm from './src/components/forms/SubmitStoryForm';
 import CategoryScreen from './src/components/screens/CategoryScreen';
 import SearchScreen from './src/components/screens/SearchScreen'; 
 import StoryPage from './src/components/screens/StoryPage';
+import themeStyles from './app/styles/theme.styles';
 // import { createDrawerNavigator } from '@react-navigation/drawer'; 
 
 const Stack = createNativeStackNavigator();
@@ -77,8 +78,16 @@ function HomeTabs() {
 }
 
 const stackPageOptions = {
-
-}
+  headerStyle: {
+    backgroundColor:"#52A0FE",
+    textAlign:'center'
+  },
+  headerTintColor:'#fff',
+  headerShadowVisible:false,
+  contentStyle: {
+    backgroundColor:"#f0f7fe"
+  }
+} 
 
 const App = () => {
 
@@ -115,23 +124,36 @@ const App = () => {
           component={CategoryScreen}
           options={{
             headerStyle: {
-              backgroundColor:"#52A0FE",
+              backgroundColor:"#52A0FE", 
             },
+            headerTitleAlign:'center',
             headerTintColor:'#fff',
             headerShadowVisible:false,
-            contentStyle:{
-              backgroundColor:"#f0f7fe",
-            },
-            headerTitleAlign:'center'
+            contentStyle: {
+              backgroundColor:"#f0f7fe"
+            }
           }}
         /> 
         <Stack.Screen 
           name='Search'
           component={SearchScreen}
+          options={stackPageOptions}
         />
         <Stack.Screen 
           name='Story'
           component={StoryPage}
+          options={{ 
+            title:"STORY",
+            headerStyle: {
+              backgroundColor:"#f0f7fe", 
+            },
+            headerTitleAlign:'center',
+            headerTintColor:themeStyles.headingColor,
+            headerShadowVisible:false,
+            contentStyle: {
+              backgroundColor:"#f0f7fe"
+            }
+          }}
         />
       </Stack.Navigator>
     </NavigationContainer>

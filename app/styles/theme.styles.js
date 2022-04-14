@@ -15,4 +15,5 @@ export default {
     FONT_SIZE_MEDIUM:scaleFontSize(20),
     FONT_SIZE_LARGE:scaleFontSize(22),
     headingColor:"#323538",
+    bodyText: "rgba(0,0,0,0.55)"
 }

@@ -10,14 +10,12 @@ import {
 import theme from '../../../app/styles/theme.styles';
 import {get} from '../api/Alamat'; 
 
-interface rendered {
-    rendered: String
+interface Alamat {
+    title: {rendered: String},
+    excerpt: {rendered: String},
+    id: Number
 }
 
-interface Alamat {
-    title: Array<rendered>,
-    excerpt: Array<rendered>
-}
 interface State {
     stories: Array<Alamat>
 }
@@ -39,16 +37,13 @@ class StoriesList extends React.Component<any, State> {
     }
 
     displayStory() { 
-        interface Alamat {
-            title: string
-        }
-        const elements =  this.state.stories.map((item, key) => { 
-            const source = {
-                html : `${item.excerpt.rendered}`
-            };
+        
+        const elements =  this.state.stories.map((item, key) => {  
+            let excerpt = item.excerpt.rendered.replace(/<p>|<\/p>/g, '');
+            const shortenExcerpt = excerpt.substring(0, 68) + '...';
             return <TouchableOpacity
                 key={key}
-                onPress={() => this.props.navigation.navigate('Story')}
+                onPress={() => this.props.navigation.navigate('Story', {id: item.id})}
                 >
                 <View style={styles.listItem}>
                     <View style={styles.imageContainer}>
@@ -58,11 +53,8 @@ class StoriesList extends React.Component<any, State> {
                         />
                     </View>
                     <View style={styles.descriptionContainer}>
-                        <Text style={styles.listTitle}>{item.title.rendered}</Text>  
-                        {/* 
-                            todo: explode the string then render to text
-                        */}
-                        <Text style={styles.excerpt}>{(item.excerpt.rendered).trim()}</Text>
+                        <Text style={styles.listTitle}>{item.title.rendered}</Text>   
+                        <Text style={styles.excerpt}>{shortenExcerpt}</Text>
                         <Text style={styles.category}>Category: Tao</Text>
                     </View>
                 </View>
@@ -89,12 +81,10 @@ class StoriesList extends React.Component<any, State> {
 const styles = StyleSheet.create({
     excerpt: {
         fontSize:theme.FONT_SIZE_SMALL,
-        color:'#999999',
-        
+        color:'#999999', 
     },
     category: {
-        color:'rgba(0,0,0,0.5)',
-        marginTop:5,
+        color:'rgba(0,0,0,0.5)', 
         fontSize:theme.FONT_SIZE_SMALL
     },
     image: {
