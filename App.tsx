@@ -27,11 +27,11 @@ import SubmitStoryForm from './src/components/forms/SubmitStoryForm';
 import CategoryScreen from './src/components/screens/CategoryScreen';
 import SearchScreen from './src/components/screens/SearchScreen'; 
 import StoryPage from './src/components/screens/StoryPage';
-import { createDrawerNavigator } from '@react-navigation/drawer'; 
+// import { createDrawerNavigator } from '@react-navigation/drawer'; 
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator(); 
-const Drawer = createDrawerNavigator();  
+// const Drawer = createDrawerNavigator();  
 
 const tabsOptions = (navigation:any) => ({
   headerTintColor:'#fff',

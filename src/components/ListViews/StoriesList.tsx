@@ -8,71 +8,78 @@ import {
     Image
 } from "react-native"; 
 import theme from '../../../app/styles/theme.styles';
+import {get} from '../api/Alamat'; 
 
-interface State {
-    data: object,
-    selected: number
+interface rendered {
+    rendered: String
 }
- 
 
+interface Alamat {
+    title: Array<rendered>,
+    excerpt: Array<rendered>
+}
+interface State {
+    stories: Array<Alamat>
+}
+
+  
 class StoriesList extends React.Component<any, State> { 
 
     constructor(props:any) {
-        super(props)  
+        super(props) 
+        this.state = {
+            stories: []
+        } 
     }   
+
+    async componentDidMount() { 
+        const stories = await get(); 
+        this.setState({stories: stories});
+        console.log(this.state.stories);
+    }
+
+    displayStory() { 
+        interface Alamat {
+            title: string
+        }
+        const elements =  this.state.stories.map((item, key) => { 
+            const source = {
+                html : `${item.excerpt.rendered}`
+            };
+            return <TouchableOpacity
+                key={key}
+                onPress={() => this.props.navigation.navigate('Story')}
+                >
+                <View style={styles.listItem}>
+                    <View style={styles.imageContainer}>
+                        <Image 
+                            style={styles.image}
+                            source={require('../../assets/images/categories/tao.jpg')}
+                        />
+                    </View>
+                    <View style={styles.descriptionContainer}>
+                        <Text style={styles.listTitle}>{item.title.rendered}</Text>  
+                        {/* 
+                            todo: explode the string then render to text
+                        */}
+                        <Text style={styles.excerpt}>{(item.excerpt.rendered).trim()}</Text>
+                        <Text style={styles.category}>Category: Tao</Text>
+                    </View>
+                </View>
+            </TouchableOpacity>
+        });
+        return elements;
+    }
+
 
     render() {
 
         return (
             <SafeAreaView style={styles.container}>
                 {this.props.title? (<Text style={styles.heading}>{this.props.title}</Text>): null}
-                <View>
-                    <View>
-                        <TouchableOpacity
-                            onPress={() => this.props.navigation.navigate('Story')}
-                        >
-                            <View style={styles.listItem}>
-                                <View style={styles.imageContainer}>
-                                    <Image 
-                                        style={styles.image}
-                                        source={require('../../assets/images/categories/tao.jpg')}
-                                    />
-                                </View>
-                                <View style={styles.descriptionContainer}>
-                                    <Text style={styles.listTitle}>Alamat ng Septik Tank</Text>
-                                    <Text style={styles.excerpt}>Lorem ipsum dolor sit, amet consectetur adipisicing elit. </Text>
-                                    <Text style={styles.category}>Category: Tao</Text>
-                                </View>
-                            </View>
-                        </TouchableOpacity>
-                        <View style={styles.listItem}>
-                            <View style={styles.imageContainer}>
-                                <Image 
-                                    style={styles.image}
-                                    source={require('../../assets/images/categories/hayop.jpg')}
-                                />
-                            </View>
-                            <View style={styles.descriptionContainer}>
-                                <Text style={styles.listTitle}>Alamat ng Lababo</Text>
-                                <Text style={styles.excerpt}>Lorem ipsum dolor sit, amet consectetur adipisicing elit. </Text>
-                                <Text style={styles.category}>Category: Hayop</Text>
-                            </View>
-                        </View>
-                        <View style={styles.listItem}>
-                            <View style={styles.imageContainer}>
-                                <Image 
-                                    style={styles.image}
-                                    source={require('../../assets/images/categories/fruit.jpg')}
-                                />
-                            </View>
-                            <View style={styles.descriptionContainer}>
-                                <Text style={styles.listTitle}>Alamat ng Gintong Ngipin</Text>
-                                <Text style={styles.excerpt}>Lorem ipsum dolor sit, amet consectetur adipisicing elit. </Text>
-                                <Text style={styles.category}>Category: Prutas</Text>
-                            </View>
-                        </View>
-                    </View>
-                </View> 
+                {
+                    this.state.stories.length ? this.displayStory() : <Text>No Story</Text>
+                }
                  
             </SafeAreaView>
         );
