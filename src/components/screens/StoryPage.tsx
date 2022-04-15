@@ -17,32 +17,53 @@ class StoryPage extends React.Component<any, any> {
     constructor(props:any) {
         super(props)
         this.state = {
-            story: {
-                title: String,
-                content: String,
-                imageURL: String
-            }
+            title: String,
+            content: Object,
+            imageURL: String,
+            category: String
         }
         
     }
 
-    componentDidMount() {
-        const id = this.props.route.params; 
-        const story = getById(id);
-        console.log(story);
+    formatContent(content:string) {
+        let text:any = [];
+        const divider = content.split("</p>");
+        divider.map((value, key) => {
+            const cleanString = value.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, '');
+            console.log(cleanString);
+            text.push( <Text key={key} style={styles.paragraph}>{cleanString}</Text> );
+        });
+        console.log(text);
+        return text;
     }
 
+    async componentDidMount() {
+        const id = this.props.route.params.id; 
+        const story:any = await getById(id); 
+        console.log(story);
+        this.setState({
+            title: story.title.rendered,
+            content: this.formatContent(story.content.rendered),
+            imageURL: story._embedded['wp:featuredmedia'][0].source_url,
+            category: story._embedded['wp:term'][0][0].name
+        });
+        this.props.navigation.setOptions({title: story.title.rendered});
+    }
 
     render() {
         return (
-            <SafeAreaView style={styles.container}>
+            <SafeAreaView>
                 <ScrollView>
-                    <Image 
-                        style={styles.image}
-                        source={require('../../assets/images/categories/fruit.jpg')}
-                    />
-                    <Text style={styles.heading}>{this.state.title}</Text>
-                    <Text style={styles.text}>{this.state.content}</Text>
+                    <View style={styles.container}>
+                        <Image 
+                            style={styles.image}
+                            source={require('../../assets/images/categories/fruit.jpg')}
+                        />
+                        <Text>{this.state.image}</Text>
+                        <Text style={styles.heading}>{this.state.title}</Text>
+                        <Text style={styles.category}>Category: {this.state.category}</Text>
+                        {this.state.content}
+                    </View> 
                 </ScrollView>
             </SafeAreaView>
         );
@@ -50,6 +71,11 @@ class StoryPage extends React.Component<any, any> {
 }
 
 const styles = StyleSheet.create({
+    category: {
+        fontSize:theme.FONT_SIZE_SMALL,
+        color:theme.bodyText,
+        marginBottom:10
+    },
     container: {
         paddingLeft:20,
         paddingRight:20
@@ -71,6 +97,11 @@ const styles = StyleSheet.create({
         borderRadius:5,
         borderWidth:1,
         borderColor:"#f4f4f5"
+    },
+    paragraph: { 
+        fontSize:theme.FONT_SIZE_REGULAR,
+        lineHeight:theme.lineHeight,
+        color: theme.bodyText
     }
 });
 export default StoryPage;

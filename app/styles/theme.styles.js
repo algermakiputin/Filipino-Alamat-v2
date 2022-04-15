@@ -11,9 +11,10 @@ function scaleFontSize(fontSize) {
 
 export default {
     FONT_SIZE_SMALL:scaleFontSize(14),
-    FONT_SIZE_REGULAR:scaleFontSize(19),
-    FONT_SIZE_MEDIUM:scaleFontSize(20),
-    FONT_SIZE_LARGE:scaleFontSize(22),
+    FONT_SIZE_REGULAR:scaleFontSize(20),
+    FONT_SIZE_MEDIUM:scaleFontSize(22),
+    FONT_SIZE_LARGE:scaleFontSize(24),
     headingColor:"#323538",
-    bodyText: "rgba(0,0,0,0.55)"
+    bodyText: "rgba(0,0,0,0.55)",
+    lineHeight: scaleFontSize(30)
 }

@@ -20,15 +20,15 @@ export const get = async () => {
 // This function accept alamat ID as parameter and returns alamat object
 export const getById = async (id) => {
     let data = [];
-    await axios.get(url + '/' + id + '?_embed')
-            .then(res => { 
-                data = res.data
-                
-            })
-            .then(err => { 
-                console.log("error");
-            })
+    await axios.get(url + '/' + id.toString() + '?_embed')
+        .then(res => { 
+            data = res.data;
+        })
+        .catch(err => { 
+            data = err;
+        })     
     return data;
+    
 }
 
 export const getByCategories = () => {

@@ -143,7 +143,7 @@ const App = () => {
           name='Story'
           component={StoryPage}
           options={{ 
-            title:"STORY",
+            title:"Alamat ng Aso",
             headerStyle: {
               backgroundColor:"#f0f7fe", 
             },
