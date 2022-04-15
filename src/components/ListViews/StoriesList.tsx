@@ -9,31 +9,27 @@ import {
 } from "react-native"; 
 import theme from '../../../app/styles/theme.styles';
 import {get} from '../api/Alamat'; 
-
-interface Alamat {
-    title: {rendered: String},
-    excerpt: {rendered: String},
-    id: Number
-}
-
-interface State {
-    stories: Array<Alamat>
-}
+ 
 
   
-class StoriesList extends React.Component<any, State> { 
+class StoriesList extends React.Component<any, any> { 
 
     constructor(props:any) {
         super(props) 
         this.state = {
-            stories: []
+            stories: {
+                title: {rendered: String},
+                excerpt: {rendered: String},
+                id: Number,
+                error:Boolean
+            }
         } 
     }   
 
     async componentDidMount() { 
-        const stories = await get(); 
+        
+        const stories = await get();   
         this.setState({stories: stories});
-        console.log(this.state.stories);
     }
 
     displayStory() { 
@@ -63,6 +59,9 @@ class StoriesList extends React.Component<any, State> {
         return elements;
     }
 
+    networkErrorMsg() {
+        return <Text>{this.state.stories.message}</Text>
+    }
 
     render() {
 
@@ -70,9 +69,10 @@ class StoriesList extends React.Component<any, State> {
             <SafeAreaView style={styles.container}>
                 {this.props.title? (<Text style={styles.heading}>{this.props.title}</Text>): null}
                 {
-                    this.state.stories.length ? this.displayStory() : <Text>No Story</Text>
+                    this.state.stories.error ? this.networkErrorMsg() : (
+                        this.state.stories.length ? this.displayStory() : <Text>No story</Text>
+                    )
                 }
-                 
             </SafeAreaView>
         );
     }

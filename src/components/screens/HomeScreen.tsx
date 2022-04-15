@@ -82,10 +82,10 @@ class HomeScreen extends React.Component<any, any> {
                         title="Recommended For You!" 
                         navigation={this.props.navigation} 
                         /> 
-                    <StoriesList 
+                    {/* <StoriesList 
                         title="Recently Added" 
                         navigation={this.props.navigation} 
-                        /> 
+                        />  */}
                 </ScrollView>
             </SafeAreaView>
         )

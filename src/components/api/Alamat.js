@@ -1,6 +1,10 @@
 import axios from "axios";
 
 const url = "http://192.168.1.3:8888/filipinoalamat/wp-json/wp/v2/alamat_posts";
+const errorStatus = {
+    error: true,
+    message: "Network error, please check your internet connection and try again"
+};
 
 export const get = async () => {
     let data = [];
@@ -8,20 +12,21 @@ export const get = async () => {
         .then(res => { 
             data = res.data;
         })
-        .catch(err => {
-            console.log(err)
+        .catch(err => { 
+            data = errorStatus;
         }) 
     return data;
 }
-
+// This function accept alamat ID as parameter and returns alamat object
 export const getById = async (id) => {
     let data = [];
     await axios.get(url + '/' + id + '?_embed')
-            .then(res => {
+            .then(res => { 
                 data = res.data
+                
             })
-            .then(err => {
-                console.log(err)
+            .then(err => { 
+                console.log("error");
             })
     return data;
 }
