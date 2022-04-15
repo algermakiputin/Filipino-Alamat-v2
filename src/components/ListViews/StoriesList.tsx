@@ -22,14 +22,15 @@ class StoriesList extends React.Component<any, any> {
                 excerpt: {rendered: String},
                 id: Number,
                 error:Boolean
-            }
+            },
+            loading:true
         } 
     }   
 
-    async componentDidMount() { 
-        
+    async componentDidMount() {  
         const stories = await get();   
-        this.setState({stories: stories});
+        this.setState({stories: stories,loading:false});
+
     }
 
     displayStory() { 
@@ -64,7 +65,10 @@ class StoriesList extends React.Component<any, any> {
     }
 
     render() {
-
+        
+        if (this.state.loading)
+            return <Text>Loading...</Text>
+            
         return (
             <SafeAreaView style={styles.container}>
                 {this.props.title? (<Text style={styles.heading}>{this.props.title}</Text>): null}

@@ -32,15 +32,13 @@ class StoryPage extends React.Component<any, any> {
             const cleanString = value.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, '');
             console.log(cleanString);
             text.push( <Text key={key} style={styles.paragraph}>{cleanString}</Text> );
-        });
-        console.log(text);
+        }); 
         return text;
     }
 
     async componentDidMount() {
         const id = this.props.route.params.id; 
         const story:any = await getById(id); 
-        console.log(story);
         this.setState({
             title: story.title.rendered,
             content: this.formatContent(story.content.rendered),
@@ -54,14 +52,17 @@ class StoryPage extends React.Component<any, any> {
         return (
             <SafeAreaView>
                 <ScrollView>
+                    <Image 
+                        style={styles.image}
+                        source={{
+                            uri: this.state.imageURL
+                        }}
+                    />
                     <View style={styles.container}>
-                        <Image 
-                            style={styles.image}
-                            source={require('../../assets/images/categories/fruit.jpg')}
-                        />
-                        <Text>{this.state.image}</Text>
-                        <Text style={styles.heading}>{this.state.title}</Text>
+                        
+                        <Text>{this.state.image}</Text> 
                         <Text style={styles.category}>Category: {this.state.category}</Text>
+                        <Text style={styles.heading}>{this.state.title}</Text>
                         {this.state.content}
                     </View> 
                 </ScrollView>
@@ -73,8 +74,7 @@ class StoryPage extends React.Component<any, any> {
 const styles = StyleSheet.create({
     category: {
         fontSize:theme.FONT_SIZE_SMALL,
-        color:theme.bodyText,
-        marginBottom:10
+        color:theme.bodyText, 
     },
     container: {
         paddingLeft:20,
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     },
     heading: {
         fontSize:theme.FONT_SIZE_LARGE,
-        marginBottom:10,
+        marginBottom:15,
         color:theme.headingColor
     },
     text: {
@@ -91,12 +91,10 @@ const styles = StyleSheet.create({
     },
     image: {
         width:'100%',
-        height:250,
+        height:275,
         resizeMode:'cover',
         marginBottom:10,
-        borderRadius:5,
-        borderWidth:1,
-        borderColor:"#f4f4f5"
+        borderRadius:5
     },
     paragraph: { 
         fontSize:theme.FONT_SIZE_REGULAR,

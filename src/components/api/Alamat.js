@@ -12,7 +12,7 @@ export const get = async () => {
         .then(res => { 
             data = res.data;
         })
-        .catch(err => { 
+        .catch(() => { 
             data = errorStatus;
         }) 
     return data;
@@ -24,11 +24,10 @@ export const getById = async (id) => {
         .then(res => { 
             data = res.data;
         })
-        .catch(err => { 
-            data = err;
+        .catch(() => { 
+            data = errorStatus;
         })     
-    return data;
-    
+    return data; 
 }
 
 export const getByCategories = () => {
@@ -37,9 +36,8 @@ export const getByCategories = () => {
         .then(res => {
             data = res.data;
         })
-        .catch(err => {
-            console.log(err)
-        })
-
+        .catch(() => {
+            data = errorStatus;
+        }) 
     return data;
 }
