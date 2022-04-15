@@ -10,6 +10,7 @@ import {
 import StoriesList from "../ListViews/StoriesList";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import theme from "../../../app/styles/theme.styles";  
+import Category from "../Carousel/Category";
 
 const Tab = createBottomTabNavigator();
 
@@ -26,21 +27,19 @@ class HomeScreen extends React.Component<any, any> {
             </View>
         )
     } 
- 
-    genresSection = (title:string) => { 
-        return (
-            <View>
-                <View style={styles.container}>
-                    <Text style={styles.heading}>{title}</Text> 
-                </View>   
-            </View>
-        )
-    }
 
     render() { 
         return (
             <SafeAreaView style={{backgroundColor:"#f0f7fe"}}> 
-                <ScrollView> 
+                <ScrollView>
+                    <View>
+                        <View style={styles.container}>
+                            <Text style={styles.heading}>Categories</Text> 
+                        </View>   
+                        <Category 
+                            navigation={this.props.navigation}
+                        />
+                    </View> 
                     <StoriesList 
                         title="Recommended For You!" 
                         navigation={this.props.navigation} 
@@ -72,7 +71,7 @@ const styles = StyleSheet.create({
         paddingRight:20,
     },
     heading: {
-        fontSize:theme.FONT_SIZE_LARGE,  
+        fontSize:theme.FONT_SIZE_MEDIUM,  
         marginTop:10,
         marginBottom:10,
         color:theme.headingColor

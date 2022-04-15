@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import Carousel from 'react-native-snap-carousel';
 import LinearGradient from 'react-native-linear-gradient';
+import { getCategories } from "../api/Alamat"; 
 
 const images = {
     prutas: require('../../assets/images/categories/fruit.jpg'),
@@ -17,11 +18,24 @@ const images = {
     tao: require('../../assets/images/categories/tao.jpg')
 }
 
-class Category extends React.Component {
+class Category extends React.Component<any,any> {
 
+    constructor(props:any) {
+        super(props);
+        this.state = {
+            data: [],
+            categories:[]
+        }
+    }
+
+    componentDidMount() { 
+        this.setData();
+    }
+    
     categoryThumbnail(title:string, image:any) {
         return ( 
-            <TouchableOpacity style={styles.genreItem}
+            <TouchableOpacity  
+                style={styles.genreItem}
                 onPress={() => this.props.navigation.navigate('Category', {category: title})}
                 >
                 <LinearGradient 
@@ -40,12 +54,28 @@ class Category extends React.Component {
         )
     }
 
-    displayCategories() {
+    async setData() { 
+        let category:Array<String> = [];
+        let index:any = [];
+        const categories = await getCategories();   
+        categories.forEach((item:any, key:number) => {   
+            if (key % 3 == 0 && key) {  
+                category.push(index); 
+                index = [];
+            }
+            index.push(item);
+            if (key == categories.length - 1 && index.length)
+                category.push(index);
+        });    
+        this.setState({data: category});  
+    }
+
+    displayCategories() { 
         return (
-            <View style={styles.GenresSectionContainer}>
+            <View style={styles.GenresSectionContainer}> 
                 {this.categoryThumbnail('Prutas', images.prutas)}
-                {this.categoryThumbnail('Hayop', images.hayop)}
-                {this.categoryThumbnail('Tao', images.tao)}
+                {this.categoryThumbnail('Prutas', images.prutas)}
+                {this.categoryThumbnail('Prutas', images.prutas)}
             </View>
         );
         
@@ -55,13 +85,14 @@ class Category extends React.Component {
         const sliderWidth = Dimensions.get('window').width;
         return (
             <SafeAreaView>
-                <Carousel 
-                    data={[1,2,3,4,5]}
+                {/* <Carousel 
+                    data={this.state.data}
                     renderItem={() => this.displayCategories()}
                     sliderWidth={sliderWidth}
                     itemWidth={sliderWidth}
                     autoplay={true}
-                />
+                    useScrollView={true}
+                /> */}
             </SafeAreaView>
         );
     }
@@ -86,7 +117,7 @@ const styles = StyleSheet.create({
         display:'flex',
         flexDirection:'row',
         paddingRight:15,
-        paddingLeft:15
+        paddingLeft:15, 
     },
     catName: {
         position:'absolute',

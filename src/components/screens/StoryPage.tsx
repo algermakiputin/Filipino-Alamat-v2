@@ -38,8 +38,7 @@ class StoryPage extends React.Component<any, any> {
 
     async componentDidMount() {
         const id = this.props.route.params.id; 
-        const story:any = await getById(id); 
-        console.log(story);
+        const story:any = await getById(id);  
         this.setState({
             title: story.title.rendered,
             content: this.formatContent(story.content.rendered),

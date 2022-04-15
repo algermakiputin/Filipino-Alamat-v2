@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const url = "http://192.168.1.3:8888/filipinoalamat/wp-json/wp/v2/alamat_posts";
+const url = "http://192.168.1.3:8888/filipinoalamat/wp-json/wp/v2/";
 const errorStatus = {
     error: true,
     message: "Network error, please check your internet connection and try again"
@@ -8,7 +8,7 @@ const errorStatus = {
 
 export const get = async () => {
     let data = [];
-    await axios.get(url + '?_embed&category=kalikasan')
+    await axios.get(url + 'alamat_posts?_embed&category=kalikasan')
         .then(res => {  
             data = res.data;
         })
@@ -20,7 +20,7 @@ export const get = async () => {
 // This function accept alamat ID as parameter and returns alamat object
 export const getById = async (id) => {
     let data = [];
-    await axios.get(url + '/' + id.toString() + '?_embed')
+    await axios.get(url + 'alamat_posts/' + id.toString() + '?_embed')
         .then(res => { 
             data = res.data; 
         })
@@ -30,11 +30,11 @@ export const getById = async (id) => {
     return data; 
 }
 
-export const getByCategories = () => {
+export const getCategories = async () => {
     let data = [];
-    axios.get(url)
+    await axios.get(url + 'alamat')
         .then(res => {
-            data = res.data;
+            data = res.data;  
         })
         .catch(() => {
             data = errorStatus;
