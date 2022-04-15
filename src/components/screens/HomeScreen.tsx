@@ -5,28 +5,18 @@ import {
     View, 
     Text,
     TextInput,
-    ScrollView,
-    Image,
-    TouchableOpacity
+    ScrollView
 } from "react-native";
 import StoriesList from "../ListViews/StoriesList";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import LinearGradient from 'react-native-linear-gradient';
-import theme from "../../../app/styles/theme.styles"; 
+import theme from "../../../app/styles/theme.styles";  
 
 const Tab = createBottomTabNavigator();
-const images = {
-    prutas: require('../../assets/images/categories/fruit.jpg'),
-    hayop: require('../../assets/images/categories/hayop.jpg'),
-    tao: require('../../assets/images/categories/tao.jpg')
-}
 
 class HomeScreen extends React.Component<any, any> {
 
     constructor(props:any) {
-        super(props)
-
-        console.log(this.props.route.name);
+        super(props) 
     } 
 
     searchBar = () => {
@@ -35,27 +25,6 @@ class HomeScreen extends React.Component<any, any> {
                 <TextInput placeholder="Search..." />
             </View>
         )
-    }
-
-    categoryThumbnail(title:string, image:any) {
-        return ( 
-            <TouchableOpacity style={styles.genreItem}
-                onPress={() => this.props.navigation.navigate('Category')}
-                >
-                <LinearGradient 
-                    start={{x: 0, y: 1}} 
-                    end={{x: 0, y: 0.35}} 
-                    colors={['rgba(0,0,0,0.75)', 'transparent']}
-                    style={styles.genreImage}
-                    >
-                    <Image
-                        source={image}
-                        style={styles.catImage}
-                    />
-                    <Text style={styles.catName}>{title}</Text>   
-                </LinearGradient>   
-            </TouchableOpacity>
-        )
     } 
  
     genresSection = (title:string) => { 
@@ -63,12 +32,7 @@ class HomeScreen extends React.Component<any, any> {
             <View>
                 <View style={styles.container}>
                     <Text style={styles.heading}>{title}</Text> 
-                </View> 
-                <View style={styles.GenresSectionContainer}> 
-                    { this.categoryThumbnail('Prutas', images.prutas) } 
-                    { this.categoryThumbnail('Hayop', images.hayop) } 
-                    { this.categoryThumbnail('Tao', images.tao) } 
-                </View>
+                </View>   
             </View>
         )
     }
@@ -76,16 +40,11 @@ class HomeScreen extends React.Component<any, any> {
     render() { 
         return (
             <SafeAreaView style={{backgroundColor:"#f0f7fe"}}> 
-                <ScrollView>
-                    {this.genresSection('Categories')} 
+                <ScrollView> 
                     <StoriesList 
                         title="Recommended For You!" 
                         navigation={this.props.navigation} 
-                        /> 
-                    {/* <StoriesList 
-                        title="Recently Added" 
-                        navigation={this.props.navigation} 
-                        />  */}
+                        />  
                 </ScrollView>
             </SafeAreaView>
         )
@@ -117,39 +76,6 @@ const styles = StyleSheet.create({
         marginTop:10,
         marginBottom:10,
         color:theme.headingColor
-    },
-    catName: {
-        position:'absolute',
-        bottom:10,
-        color:"#fff" 
-    },
-    catImage: {
-        width:'100%',
-        height:'100%',
-        resizeMode:'cover',
-        flex:1,
-        borderRadius:10,
-        zIndex:-1
-    },
-    GenresSectionContainer: {
-        display:'flex',
-        flexDirection:'row',
-        paddingRight:15,
-        paddingLeft:15
-    },
-    genreItem: {
-        width:'33.33%', 
-        padding:5,
-        
-    },
-    genreImage: {
-        height:105, 
-        display:'flex',
-        alignItems:'center',
-        position:'relative',
-        zIndex:10,
-        borderRadius:10
-    
     }
 });
 

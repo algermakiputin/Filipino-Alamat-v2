@@ -10,8 +10,6 @@ import {
 import theme from '../../../app/styles/theme.styles';
 import {get} from '../api/Alamat'; 
  
-
-  
 class StoriesList extends React.Component<any, any> { 
 
     constructor(props:any) {
@@ -28,6 +26,7 @@ class StoriesList extends React.Component<any, any> {
     }   
 
     async componentDidMount() {  
+        console.log(this.props.category)
         const stories = await get();   
         this.setState({stories: stories,loading:false});
 
@@ -37,22 +36,27 @@ class StoriesList extends React.Component<any, any> {
         
         const elements =  this.state.stories.map((item:any, key:number) => {  
             let excerpt = item.excerpt.rendered.replace(/<p>|<\/p>/g, '');
-            const shortenExcerpt = excerpt.substring(0, 68) + '...';
+            const shortenExcerpt = excerpt.substring(0, 68) + '...'; 
             return <TouchableOpacity
                 key={key}
                 onPress={() => this.props.navigation.navigate('Story', {id: item.id})}
                 >
                 <View style={styles.listItem}>
                     <View style={styles.imageContainer}>
-                        <Image 
-                            style={styles.image}
-                            source={require('../../assets/images/categories/tao.jpg')}
-                        />
+                        {
+                            item._embedded.hasOwnProperty("wp:featuredmedia") ? (
+                                <Image 
+                                    style={styles.image}
+                                    source={{uri: item._embedded['wp:featuredmedia'][0].source_url}}
+                                />
+                            ) : null
+                            
+                        }
                     </View>
                     <View style={styles.descriptionContainer}>
                         <Text style={styles.listTitle}>{item.title.rendered}</Text>   
                         <Text style={styles.excerpt}>{shortenExcerpt}</Text>
-                        <Text style={styles.category}>Category: Tao</Text>
+                        <Text style={styles.category}>Category: {item._embedded['wp:term'][0][0].name }</Text>
                     </View>
                 </View>
             </TouchableOpacity>
@@ -68,7 +72,7 @@ class StoriesList extends React.Component<any, any> {
         
         if (this.state.loading)
             return <Text>Loading...</Text>
-            
+
         return (
             <SafeAreaView style={styles.container}>
                 {this.props.title? (<Text style={styles.heading}>{this.props.title}</Text>): null}
@@ -125,7 +129,7 @@ const styles = StyleSheet.create({
         marginBottom:10
     },
     listTitle: {
-        fontSize:theme.FONT_SIZE_MEDIUM,
+        fontSize:theme.FONT_SIZE_REGULAR,
         color:theme.headingColor,
         fontFamily:'Poppings-ThinItalic',
         marginBottom:5

@@ -8,8 +8,8 @@ const errorStatus = {
 
 export const get = async () => {
     let data = [];
-    await axios.get(url + '?_embed')
-        .then(res => { 
+    await axios.get(url + '?_embed&category=kalikasan')
+        .then(res => {  
             data = res.data;
         })
         .catch(() => { 
@@ -22,7 +22,7 @@ export const getById = async (id) => {
     let data = [];
     await axios.get(url + '/' + id.toString() + '?_embed')
         .then(res => { 
-            data = res.data;
+            data = res.data; 
         })
         .catch(() => { 
             data = errorStatus;
@@ -33,6 +33,18 @@ export const getById = async (id) => {
 export const getByCategories = () => {
     let data = [];
     axios.get(url)
+        .then(res => {
+            data = res.data;
+        })
+        .catch(() => {
+            data = errorStatus;
+        }) 
+    return data;
+}
+
+export const search = (query) => {
+    let data = [];
+    axios.get(url + '?search=' + query)
         .then(res => {
             data = res.data;
         })

@@ -29,7 +29,7 @@ class StoryPage extends React.Component<any, any> {
         let text:any = [];
         const divider = content.split("</p>");
         divider.map((value, key) => {
-            const cleanString = value.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, '');
+            const cleanString = value.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, ''); 
             console.log(cleanString);
             text.push( <Text key={key} style={styles.paragraph}>{cleanString}</Text> );
         }); 
@@ -39,13 +39,13 @@ class StoryPage extends React.Component<any, any> {
     async componentDidMount() {
         const id = this.props.route.params.id; 
         const story:any = await getById(id); 
+        console.log(story);
         this.setState({
             title: story.title.rendered,
             content: this.formatContent(story.content.rendered),
             imageURL: story._embedded['wp:featuredmedia'][0].source_url,
-            category: story._embedded['wp:term'][0][0].name
-        });
-        this.props.navigation.setOptions({title: story.title.rendered});
+            category: story._embedded['wp:term'][0][0].name 
+        }); 
     }
 
     render() {
@@ -93,8 +93,7 @@ const styles = StyleSheet.create({
         width:'100%',
         height:275,
         resizeMode:'cover',
-        marginBottom:10,
-        borderRadius:5
+        marginBottom:10 
     },
     paragraph: { 
         fontSize:theme.FONT_SIZE_REGULAR,

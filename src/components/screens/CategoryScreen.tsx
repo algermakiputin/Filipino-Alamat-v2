@@ -13,8 +13,11 @@ import themeStyles from '../../../app/styles/theme.styles';
 
 class CategoryScreen extends React.Component<any,any> {
 
-    render() {
+    constructor(props:any) {
+        super(props)
+    }
 
+    render() {
         return (
             <SafeAreaView>
                 <View style={styles.container}> 
@@ -23,13 +26,13 @@ class CategoryScreen extends React.Component<any,any> {
                         placeholder="Search..."
                         placeholderTextColor={"#333"}
                     />
-                    <Text style={styles.heading}>Mga alamat tungkol sa Tao</Text> 
-                    
+                    <Text style={styles.heading}>Mga alamat tungkol sa {this.props.route.params.category}</Text>   
                 </View>
                 <ScrollView>
                     <StoriesList 
                         title='' 
                         navigation={this.props.navigation} 
+                        category={this.props.route.params.category}
                         />
                 </ScrollView>
             </SafeAreaView>
