@@ -34,7 +34,7 @@ class StoriesList extends React.Component<any, any> {
 
     displayStory() { 
         
-        const elements =  this.state.stories.map((item:any, key:number) => {  
+        const elements =  this.state.stories.map((item:any, key:number) => {   
             let excerpt = item.excerpt.rendered.replace(/<p>|<\/p>/g, '');
             const shortenExcerpt = excerpt.substring(0, 68) + '...'; 
             return <TouchableOpacity

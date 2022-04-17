@@ -32,7 +32,8 @@ export const getById = async (id) => {
 
 export const getCategories = async () => {
     let data = [];
-    await axios.get(url + 'alamat')
+    let url = 'http://192.168.1.3:8888/filipinoalamat/wp-json/alamat/api/taxonomies';
+    await axios.get(url)
         .then(res => {
             data = res.data;  
         })

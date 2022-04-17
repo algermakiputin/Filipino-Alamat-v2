@@ -20,52 +20,77 @@ const images = {
     hayop: require('../../assets/images/categories/hayop.jpg'),
     tao: require('../../assets/images/categories/tao.jpg')
 }
-const windowWidth = Dimensions.get('window').width;
-
-function categoryThumbnail(title:string, image:any) {
-    return ( 
-        <TouchableOpacity  
-            style={styles.genreItem}
-            onPress={() => {} }//this.props.navigation.navigate('Category', {category: title})}
-            >
-            <LinearGradient 
-                start={{x: 0, y: 1}} 
-                end={{x: 0, y: 0.35}} 
-                colors={['rgba(0,0,0,0.75)', 'transparent']}
-                style={styles.genreImage}
-                >
-                <Image
-                    source={image}
-                    style={styles.catImage}
-                />
-                <Text style={styles.catName}>{title}</Text>   
-            </LinearGradient>   
-        </TouchableOpacity>
-    )
-}
+const windowWidth = Dimensions.get('window').width; 
  
 
 function Category() {
     const scrollX = React.useRef(new Animated.Value(0)).current; 
     const scrollViewRef = React.useRef<ScrollView|null>(null);
-    const [index, setIndex] = useState(Number); 
-    const indexRef = React.useRef(index);
-    const maxIndex = 3;
+    const [index, setIndex] = useState(Number);  
+    const [data, setData] = useState(Array);
+    const maxIndex = 3; 
 
-    function test() {
-        console.log(index);
+    async function fetchData() { 
+        let category:Array<String> = [];
+        let index:any = [];
+        const categories = await getCategories();   
+        categories.forEach((item:any, key:number) => {   
+            if (key % 3 == 0 && key) {  
+                category.push(index); 
+                index = [];
+            }
+            index.push(item);
+            if (key == categories.length - 1 && index.length)
+                category.push(index);
+        });    
+        console.log(categories);
+        setData(category);
     }
 
-    useEffect(() => {   
+    function displayCategories() { 
+        return data.map((value:any, key:number) => {
+            return (
+                <View key={key} style={styles.GenresSectionContainer}> 
+                    {
+                        value.map((item:any, index:number) => { 
+                            return (
+                                <View key={index} style={styles.genreItem}>
+                                    <LinearGradient 
+                                        start={{x: 0, y: 1}} 
+                                        end={{x: 0, y: 0.35}} 
+                                        colors={['rgba(0,0,0,0.75)', 'transparent']}
+                                        style={styles.genreImage}
+                                        >
+                                        { item.thumbnail ? (
+                                            <Image
+                                                source={{
+                                                    uri: item.thumbnail
+                                                }}
+                                                style={styles.catImage}
+                                            />
+                                            ) : null
+                                        }
+                                        <Text style={styles.catName}>{item.name}</Text>   
+                                    </LinearGradient>
+                                </View> 
+                            )
+                        })
+                    } 
+                </View>
+            )
+        });
+    }
+
+    useEffect(() => { 
+        fetchData();
         let interval = setInterval(function() {  
             setIndex((index) => {
                 let scroll = index;
                 scroll = index >= maxIndex ? 0 : index + 1;
                 scrollViewRef.current?.scrollTo({x:(scroll) * windowWidth}); 
                 return scroll;
-            })
-            
-        },3500);
+            }) 
+        },4000);
         return () => clearInterval(interval); 
     },[])
 
@@ -97,139 +122,8 @@ function Category() {
                 }}
                 scrollEventThrottle={1} 
                 showsHorizontalScrollIndicator={false}
-            >
-                <View style={styles.GenresSectionContainer}> 
-                    <View style={styles.genreItem}>
-                        <LinearGradient 
-                        start={{x: 0, y: 1}} 
-                        end={{x: 0, y: 0.35}} 
-                        colors={['rgba(0,0,0,0.75)', 'transparent']}
-                        style={styles.genreImage}
-                        >
-                            <Image
-                                source={images.hayop}
-                                style={styles.catImage}
-                            />
-                            <Text style={styles.catName}>{"Hi"}</Text>   
-                        </LinearGradient> 
-                    </View>
-                    <View style={styles.genreItem}>
-                        <LinearGradient 
-                        start={{x: 0, y: 1}} 
-                        end={{x: 0, y: 0.35}} 
-                        colors={['rgba(0,0,0,0.75)', 'transparent']}
-                        style={styles.genreImage}
-                        >
-                            <Image
-                                source={images.hayop}
-                                style={styles.catImage}
-                            />
-                            <Text style={styles.catName}>{"Hi"}</Text>   
-                        </LinearGradient> 
-                    </View>
-                    <View style={styles.genreItem}>
-                        <LinearGradient 
-                        start={{x: 0, y: 1}} 
-                        end={{x: 0, y: 0.35}} 
-                        colors={['rgba(0,0,0,0.75)', 'transparent']}
-                        style={styles.genreImage}
-                        >
-                            <Image
-                                source={images.hayop}
-                                style={styles.catImage}
-                            />
-                            <Text style={styles.catName}>{"Hi"}</Text>   
-                        </LinearGradient> 
-                    </View>
-                </View> 
-                <View style={styles.GenresSectionContainer}> 
-                    <View style={styles.genreItem}>
-                        <LinearGradient 
-                        start={{x: 0, y: 1}} 
-                        end={{x: 0, y: 0.35}} 
-                        colors={['rgba(0,0,0,0.75)', 'transparent']}
-                        style={styles.genreImage}
-                        >
-                            <Image
-                                source={images.hayop}
-                                style={styles.catImage}
-                            />
-                            <Text style={styles.catName}>{"Hayop"}</Text>   
-                        </LinearGradient> 
-                    </View>
-                    <View style={styles.genreItem}>
-                        <LinearGradient 
-                        start={{x: 0, y: 1}} 
-                        end={{x: 0, y: 0.35}} 
-                        colors={['rgba(0,0,0,0.75)', 'transparent']}
-                        style={styles.genreImage}
-                        >
-                            <Image
-                                source={images.prutas}
-                                style={styles.catImage}
-                            />
-                            <Text style={styles.catName}>{"Prutas"}</Text>   
-                        </LinearGradient> 
-                    </View>
-                    <View style={styles.genreItem}>
-                        <LinearGradient 
-                        start={{x: 0, y: 1}} 
-                        end={{x: 0, y: 0.35}} 
-                        colors={['rgba(0,0,0,0.75)', 'transparent']}
-                        style={styles.genreImage}
-                        >
-                            <Image
-                                source={images.tao}
-                                style={styles.catImage}
-                            />
-                            <Text style={styles.catName}>{"Tao"}</Text>   
-                        </LinearGradient> 
-                    </View>
-                </View>
-                <View style={styles.GenresSectionContainer}> 
-                    <View style={styles.genreItem}>
-                        <LinearGradient 
-                        start={{x: 0, y: 1}} 
-                        end={{x: 0, y: 0.35}} 
-                        colors={['rgba(0,0,0,0.75)', 'transparent']}
-                        style={styles.genreImage}
-                        >
-                            <Image
-                                source={images.hayop}
-                                style={styles.catImage}
-                            />
-                            <Text style={styles.catName}>{"Hayop"}</Text>   
-                        </LinearGradient> 
-                    </View>
-                    <View style={styles.genreItem}>
-                        <LinearGradient 
-                        start={{x: 0, y: 1}} 
-                        end={{x: 0, y: 0.35}} 
-                        colors={['rgba(0,0,0,0.75)', 'transparent']}
-                        style={styles.genreImage}
-                        >
-                            <Image
-                                source={images.prutas}
-                                style={styles.catImage}
-                            />
-                            <Text style={styles.catName}>{"Prutas"}</Text>   
-                        </LinearGradient> 
-                    </View>
-                    <View style={styles.genreItem}>
-                        <LinearGradient 
-                        start={{x: 0, y: 1}} 
-                        end={{x: 0, y: 0.35}} 
-                        colors={['rgba(0,0,0,0.75)', 'transparent']}
-                        style={styles.genreImage}
-                        >
-                            <Image
-                                source={images.tao}
-                                style={styles.catImage}
-                            />
-                            <Text style={styles.catName}>{"Tao"}</Text>   
-                        </LinearGradient> 
-                    </View>
-                </View>
+            >  
+                {displayCategories()}
             </ScrollView>
         </SafeAreaView>
     );
