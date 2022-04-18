@@ -15,6 +15,7 @@ class CategoryScreen extends React.Component<any,any> {
 
     constructor(props:any) {
         super(props)
+        console.log(props.route.params);
     }
 
     render() {
@@ -26,13 +27,13 @@ class CategoryScreen extends React.Component<any,any> {
                         placeholder="Search..."
                         placeholderTextColor={"#333"}
                     />
-                    <Text style={styles.heading}>Mga alamat tungkol sa {this.props.route.params.category}</Text>   
+                    <Text style={styles.heading}>Mga alamat tungkol sa {this.props.route.params.name}</Text>   
                 </View>
                 <ScrollView>
                     <StoriesList 
                         title='' 
                         navigation={this.props.navigation} 
-                        category={this.props.route.params.category}
+                        category={this.props.route.params.id} 
                         />
                 </ScrollView>
             </SafeAreaView>

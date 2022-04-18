@@ -23,13 +23,12 @@ const images = {
 const windowWidth = Dimensions.get('window').width; 
  
 
-function Category() {
+function Category(props:any) {
     const scrollX = React.useRef(new Animated.Value(0)).current; 
     const scrollViewRef = React.useRef<ScrollView|null>(null);
     const [index, setIndex] = useState(Number);  
     const [data, setData] = useState(Array);
-    const maxIndex = 3; 
-
+    const maxIndex = 3;  
     async function fetchData() { 
         let category:Array<String> = [];
         let index:any = [];
@@ -42,8 +41,7 @@ function Category() {
             index.push(item);
             if (key == categories.length - 1 && index.length)
                 category.push(index);
-        });    
-        console.log(categories);
+        });     
         setData(category);
     }
 
@@ -54,25 +52,28 @@ function Category() {
                     {
                         value.map((item:any, index:number) => { 
                             return (
-                                <View key={index} style={styles.genreItem}>
-                                    <LinearGradient 
-                                        start={{x: 0, y: 1}} 
-                                        end={{x: 0, y: 0.35}} 
-                                        colors={['rgba(0,0,0,0.75)', 'transparent']}
-                                        style={styles.genreImage}
-                                        >
-                                        { item.thumbnail ? (
-                                            <Image
-                                                source={{
-                                                    uri: item.thumbnail
-                                                }}
-                                                style={styles.catImage}
-                                            />
-                                            ) : null
-                                        }
-                                        <Text style={styles.catName}>{item.name}</Text>   
-                                    </LinearGradient>
-                                </View> 
+                                <TouchableOpacity 
+                                    onPress={() => props.navigation.navigate('Category', {name: item.name, id: item.term_id})}
+                                    key={index}
+                                    style={styles.genreItem}> 
+                                        <LinearGradient 
+                                            start={{x: 0, y: 1}} 
+                                            end={{x: 0, y: 0.35}} 
+                                            colors={['rgba(0,0,0,0.75)', 'transparent']}
+                                            style={styles.genreImage}
+                                            >
+                                            { item.thumbnail ? (
+                                                <Image
+                                                    source={{
+                                                        uri: item.thumbnail
+                                                    }}
+                                                    style={styles.catImage}
+                                                />
+                                                ) : null
+                                            }
+                                            <Text style={styles.catName}>{item.name}</Text>   
+                                        </LinearGradient> 
+                                </TouchableOpacity> 
                             )
                         })
                     } 
@@ -128,72 +129,7 @@ function Category() {
         </SafeAreaView>
     );
 }
-// class Category extends React.Component<any,any> {
- 
-//     constructor(props:any) {
-//         super(props);
-//         this.state = {
-//             data: [],
-//             categories:[]
-//         }
-        
-//     }
 
-//     componentDidMount() { 
-//         this.setData();
-//         const scrollX = React.useRef(new Animated.Value(0)).current;
-//     }
-    
-//     categoryThumbnail(title:string, image:any) {
-//         return ( 
-//             <TouchableOpacity  
-//                 style={styles.genreItem}
-//                 onPress={() => this.props.navigation.navigate('Category', {category: title})}
-//                 >
-//                 <LinearGradient 
-//                     start={{x: 0, y: 1}} 
-//                     end={{x: 0, y: 0.35}} 
-//                     colors={['rgba(0,0,0,0.75)', 'transparent']}
-//                     style={styles.genreImage}
-//                     >
-//                     <Image
-//                         source={image}
-//                         style={styles.catImage}
-//                     />
-//                     <Text style={styles.catName}>{title}</Text>   
-//                 </LinearGradient>   
-//             </TouchableOpacity>
-//         )
-//     }
-
-//     async setData() { 
-//         let category:Array<String> = [];
-//         let index:any = [];
-//         const categories = await getCategories();   
-//         categories.forEach((item:any, key:number) => {   
-//             if (key % 3 == 0 && key) {  
-//                 category.push(index); 
-//                 index = [];
-//             }
-//             index.push(item);
-//             if (key == categories.length - 1 && index.length)
-//                 category.push(index);
-//         });    
-//         this.setState({data: category});  
-//     }
-
-//     displayCategories() { 
-//         return (
-//             <View style={styles.GenresSectionContainer}> 
-//                 {this.categoryThumbnail('Prutas', images.prutas)}
-//                 {this.categoryThumbnail('Prutas', images.prutas)}
-//                 {this.categoryThumbnail('Prutas', images.prutas)}
-//             </View>
-//         );
-        
-//     };
- 
-// }
 
 const styles = StyleSheet.create({ 
     genreItem: {

@@ -8,7 +8,7 @@ import {
     Image
 } from "react-native"; 
 import theme from '../../../app/styles/theme.styles';
-import {get} from '../api/Alamat'; 
+import {get, getAlamatByCategory} from '../api/Alamat'; 
  
 class StoriesList extends React.Component<any, any> { 
 
@@ -25,15 +25,18 @@ class StoriesList extends React.Component<any, any> {
         } 
     }   
 
-    async componentDidMount() {  
-        console.log(this.props.category)
-        const stories = await get();   
+    async componentDidMount() { 
+        let stories = [];  
+        if (!this.props.category) 
+            stories = await get();
+        else 
+            stories = await getAlamatByCategory(this.props.category);
+
         this.setState({stories: stories,loading:false});
 
     }
 
-    displayStory() { 
-        
+    displayStory() {  
         const elements =  this.state.stories.map((item:any, key:number) => {   
             let excerpt = item.excerpt.rendered.replace(/<p>|<\/p>/g, '');
             const shortenExcerpt = excerpt.substring(0, 68) + '...'; 
