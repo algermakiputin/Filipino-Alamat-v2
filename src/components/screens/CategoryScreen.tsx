@@ -12,10 +12,14 @@ import StoriesList from '../ListViews/StoriesList';
 import themeStyles from '../../../app/styles/theme.styles';
 
 class CategoryScreen extends React.Component<any,any> {
-
+    
+    private ref:any;
     constructor(props:any) {
-        super(props)
-        console.log(props.route.params);
+        super(props)  
+        this.ref = React.createRef();
+        this.state = {
+            query: ''
+        }
     }
 
     render() {
@@ -25,15 +29,20 @@ class CategoryScreen extends React.Component<any,any> {
                     <TextInput 
                         style={styles.searchbox}
                         placeholder="Search..."
-                        placeholderTextColor={"#333"}
+                        placeholderTextColor={"#333"} 
+                        onChangeText={(text) => {
+                            this.ref.current.fetchStories(text);
+                        }}
                     />
                     <Text style={styles.heading}>Mga alamat tungkol sa {this.props.route.params.name}</Text>   
                 </View>
                 <ScrollView>
-                    <StoriesList 
+                    <StoriesList
+                        ref={this.ref} 
                         title='' 
                         navigation={this.props.navigation} 
-                        category={this.props.route.params.id} 
+                        category={this.props.route.params.id}
+                        query={this.state.query} 
                         />
                 </ScrollView>
             </SafeAreaView>

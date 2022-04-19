@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const url = "http://192.168.1.9:8888/filipinoalamat/wp-json/wp/v2/";
+const url = "http://192.168.1.6:8888/filipinoalamat/wp-json/wp/v2/";
 const errorStatus = {
     error: true,
     message: "Network error, please check your internet connection and try again"
@@ -30,9 +30,9 @@ export const getById = async (id) => {
     return data; 
 }
 
-export const getAlamatByCategory = async(id) => { 
+export const getAlamatByCategory = async(id,query = '') => { 
     let data = [];
-    await axios.get(url + 'alamat_posts?_embed&alamat=' + id)
+    await axios.get(url + 'alamat_posts?_embed&alamat=' + id + '&search=' + query)
         .then(res => { 
             data = res.data; 
         })
@@ -44,7 +44,7 @@ export const getAlamatByCategory = async(id) => {
 
 export const getCategories = async () => {
     let data = []; 
-    let url = 'http://192.168.1.9:8888/filipinoalamat/wp-json/alamat/api/taxonomies';
+    let url = 'http://192.168.1.6:8888/filipinoalamat/wp-json/alamat/api/taxonomies';
     await axios.get(url)
         .then(res => { 
             data = res.data;  

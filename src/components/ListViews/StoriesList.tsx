@@ -21,19 +21,23 @@ class StoriesList extends React.Component<any, any> {
                 id: Number,
                 error:Boolean
             },
-            loading:true
+            loading:true,
+            query: ''
         } 
     }   
 
-    async componentDidMount() { 
+    componentDidMount() { 
+        this.fetchStories();
+    }
+
+    async fetchStories(query = "") { 
         let stories = [];  
         if (!this.props.category) 
             stories = await get();
         else 
-            stories = await getAlamatByCategory(this.props.category);
+            stories = await getAlamatByCategory(this.props.category, query);
 
         this.setState({stories: stories,loading:false});
-
     }
 
     displayStory() {  
@@ -42,7 +46,9 @@ class StoriesList extends React.Component<any, any> {
             const shortenExcerpt = excerpt.substring(0, 68) + '...'; 
             return <TouchableOpacity
                 key={key}
-                onPress={() => this.props.navigation.navigate('Story', {id: item.id})}
+                onPress={() => { 
+                    this.props.navigation.navigate('Story', {id: item.id})
+                }}
                 >
                 <View style={styles.listItem}>
                     <View style={styles.imageContainer}>
@@ -71,12 +77,10 @@ class StoriesList extends React.Component<any, any> {
     }
 
     render() {
-        
-        if (this.state.loading)
-            return <Text>Loading...</Text>
 
         return (
             <SafeAreaView style={styles.container}>
+                {this.state.loading ? <Text>Loading...</Text> : null}
                 {this.props.title? (<Text style={styles.heading}>{this.props.title}</Text>): null}
                 {
                     this.state.stories.error ? this.networkErrorMsg() : (
