@@ -31,20 +31,23 @@ class CategoryScreen extends React.Component<any,any> {
                         placeholder="Search..."
                         placeholderTextColor={"#333"} 
                         onChangeText={(text) => {
+                            this.setState({query:text})
                             this.ref.current.fetchStories(text);
                         }}
                     />
-                    <Text style={styles.heading}>Mga alamat tungkol sa {this.props.route.params.name}</Text>   
-                </View>
-                <ScrollView>
-                    <StoriesList
-                        ref={this.ref} 
-                        title='' 
-                        navigation={this.props.navigation} 
-                        category={this.props.route.params.id}
-                        query={this.state.query} 
-                        />
-                </ScrollView>
+                    <Text style={styles.heading}>
+                        { this.state.query ? <Text>Search Result for: "{this.state.query}"</Text> : (
+                            <Text>Mga alamat tungkol sa {this.props.route.params.name}</Text>
+                        )}
+                    </Text>   
+                </View> 
+                <StoriesList
+                    ref={this.ref} 
+                    title='' 
+                    navigation={this.props.navigation} 
+                    category={this.props.route.params.id}
+                    query={this.state.query} 
+                    /> 
             </SafeAreaView>
         );
     }

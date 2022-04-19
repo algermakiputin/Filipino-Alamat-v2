@@ -5,7 +5,8 @@ import {
     StyleSheet,
     View, 
     TouchableOpacity,
-    Image
+    Image,
+    FlatList
 } from "react-native"; 
 import theme from '../../../app/styles/theme.styles';
 import {get, getAlamatByCategory} from '../api/Alamat'; 
@@ -37,15 +38,14 @@ class StoriesList extends React.Component<any, any> {
         else 
             stories = await getAlamatByCategory(this.props.category, query);
 
-        this.setState({stories: stories,loading:false});
+        this.setState({stories: stories,loading:false}); 
     }
 
-    displayStory() {  
-        return this.state.stories.map((item:any, key:number) => {   
-            let excerpt = item.excerpt.rendered.replace(/<p>|<\/p>/g, '');
-            const shortenExcerpt = excerpt.substring(0, 68) + '...'; 
-            return <TouchableOpacity
-                key={key}
+    displayStory(item:any) {   
+        let excerpt = item.excerpt.rendered.replace(/<p>|<\/p>/g, '');
+        const shortenExcerpt = excerpt.substring(0, 68) + '...'; 
+        return (
+            <TouchableOpacity 
                 onPress={() => { 
                     this.props.navigation.navigate('Story', {id: item.id})
                 }}
@@ -69,25 +69,20 @@ class StoriesList extends React.Component<any, any> {
                     </View>
                 </View>
             </TouchableOpacity>
-        }); 
-    }
-
-    networkErrorMsg() {
-        return <Text>{this.state.stories.message}</Text>
-    }
+        ) 
+    } 
 
     render() {
 
         return (
-            <SafeAreaView style={styles.container}>
-                {this.state.loading ? <Text>Loading...</Text> : null}
-                {this.props.title? (<Text style={styles.heading}>{this.props.title}</Text>): null}
-                {
-                    this.state.stories.error ? this.networkErrorMsg() : (
-                        this.state.stories.length ? this.displayStory() : <Text>No story</Text>
-                    )
-                }
-            </SafeAreaView>
+            <View style={styles.container}>
+                {this.state.loading ? <Text>Loading...</Text> : (
+                    <FlatList
+                        data={this.state.stories}
+                        renderItem={({item}) => this.displayStory(item)}
+                    />
+                )} 
+            </View>  
         );
     }
 }
