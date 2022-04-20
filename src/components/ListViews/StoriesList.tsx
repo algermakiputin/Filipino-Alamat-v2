@@ -8,7 +8,11 @@ import {
     Image
 } from "react-native"; 
 import theme from '../../../app/styles/theme.styles';
-import {get, getAlamatByCategory} from '../api/Alamat'; 
+import {
+    get, 
+    getAlamatByCategory,
+    getRecommendations
+} from '../api/Alamat'; 
  
 class StoriesList extends React.Component<any, any> { 
 
@@ -32,11 +36,13 @@ class StoriesList extends React.Component<any, any> {
 
     async fetchStories(query = "") { 
         let stories = [];  
-        if (!this.props.category) 
-            stories = await get();
-        else 
+        if (this.props.category) 
             stories = await getAlamatByCategory(this.props.category, query);
-
+        else if (this.props.recommendations)
+            stories = await getRecommendations(); 
+        else 
+            stories = await get();
+         
         this.setState({stories: stories,loading:false});
     }
 
@@ -44,6 +50,7 @@ class StoriesList extends React.Component<any, any> {
         return this.state.stories.map((item:any, key:number) => {   
             let excerpt = item.excerpt.rendered.replace(/<p>|<\/p>/g, '');
             const shortenExcerpt = excerpt.substring(0, 68) + '...'; 
+            console.log(item);
             return <TouchableOpacity
                 key={key}
                 onPress={() => { 

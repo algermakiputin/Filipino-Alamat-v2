@@ -42,6 +42,19 @@ export const getAlamatByCategory = async(id,query = '') => {
     return data;
 }
 
+export const getRecommendations = async() => { 
+    let data = [];
+    await axios.get('http://192.168.1.6:8888/filipinoalamat/wp-json/alamat/api/recommendations?_embed')
+        .then(res => { 
+            data = res.data; 
+        })
+        .catch(() => { 
+            data = errorStatus;
+        })     
+    console.log(data);
+    return data;
+}
+
 export const getCategories = async () => {
     let data = []; 
     let url = 'http://192.168.1.6:8888/filipinoalamat/wp-json/alamat/api/taxonomies';
