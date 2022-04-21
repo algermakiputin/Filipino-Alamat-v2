@@ -14,6 +14,7 @@ import themeStyles from '../../../app/styles/theme.styles';
 class CategoryScreen extends React.Component<any,any> {
     
     private ref:any;
+    
     constructor(props:any) {
         super(props)  
         this.ref = React.createRef();
@@ -38,16 +39,18 @@ class CategoryScreen extends React.Component<any,any> {
                     <Text style={styles.heading}>
                         { this.state.query ? <Text>Search Result for: "{this.state.query}"</Text> : (
                             <Text>Mga alamat tungkol sa {this.props.route.params.name}</Text>
-                        )}
-                    </Text>   
-                </View> 
-                <StoriesList
-                    ref={this.ref} 
-                    title='' 
-                    navigation={this.props.navigation} 
-                    category={this.props.route.params.id}
-                    query={this.state.query} 
-                    /> 
+                        )} 
+                    </Text>    
+                </View>
+                <ScrollView>
+                    <StoriesList
+                        ref={this.ref} 
+                        title='' 
+                        navigation={this.props.navigation} 
+                        category={this.props.route.params.id}
+                        query={this.state.query} 
+                        />
+                </ScrollView> 
             </SafeAreaView>
         );
     }

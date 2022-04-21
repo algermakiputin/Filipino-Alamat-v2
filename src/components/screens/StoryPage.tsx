@@ -30,7 +30,6 @@ class StoryPage extends React.Component<any, any> {
         const divider = content.split("</p>");
         divider.map((value, key) => {
             const cleanString = value.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, ''); 
-            console.log(cleanString);
             text.push( <Text key={key} style={styles.paragraph}>{cleanString}</Text> );
         }); 
         return text;

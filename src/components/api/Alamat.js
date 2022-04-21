@@ -6,9 +6,9 @@ const errorStatus = {
     message: "Network error, please check your internet connection and try again"
 };
 
-export const get = async () => {
+export const get = async (query = '') => {
     let data = [];
-    await axios.get(url + 'alamat_posts?_embed&category=kalikasan')
+    await axios.get(url + 'alamat_posts?_embed&search=' + query)
         .then(res => {  
             data = res.data;
         })
@@ -39,6 +39,19 @@ export const getAlamatByCategory = async(id,query = '') => {
         .catch(() => { 
             data = errorStatus;
         })     
+    return data;
+}
+
+export const getRecommendations = async() => { 
+    let data = [];
+    await axios.get('http://192.168.1.6:8888/filipinoalamat/wp-json/alamat/api/recommendations?_embed')
+        .then(res => { 
+            data = res.data; 
+        })
+        .catch(() => { 
+            data = errorStatus;
+        })     
+    console.log(data);
     return data;
 }
 

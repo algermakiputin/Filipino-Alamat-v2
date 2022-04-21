@@ -9,7 +9,11 @@ import {
     FlatList
 } from "react-native"; 
 import theme from '../../../app/styles/theme.styles';
-import {get, getAlamatByCategory} from '../api/Alamat'; 
+import {
+    get, 
+    getAlamatByCategory,
+    getRecommendations
+} from '../api/Alamat'; 
  
 class StoriesList extends React.Component<any, any> { 
 
@@ -33,19 +37,22 @@ class StoriesList extends React.Component<any, any> {
 
     async fetchStories(query = "") { 
         let stories = [];  
-        if (!this.props.category) 
-            stories = await get();
+        if (this.props.category) 
+            stories = await getAlamatByCategory(this.props.category, query); 
+        else if (this.props.recommendations)
+            stories = await getRecommendations(); 
         else 
-            stories = await getAlamatByCategory(this.props.category, query);
-
-        this.setState({stories: stories,loading:false}); 
+            stories = await get(query);
+         
+        this.setState({stories: stories,loading:false});
     }
 
-    displayStory(item:any) {   
-        let excerpt = item.excerpt.rendered.replace(/<p>|<\/p>/g, '');
-        const shortenExcerpt = excerpt.substring(0, 68) + '...'; 
-        return (
-            <TouchableOpacity 
+    displayStory() {  
+        return this.state.stories.map((item:any, key:number) => {   
+            let excerpt = item.excerpt.rendered.replace(/<p>|<\/p>/g, '');
+            const shortenExcerpt = excerpt.substring(0, 68) + '...';  
+            return <TouchableOpacity
+                key={key} 
                 onPress={() => { 
                     this.props.navigation.navigate('Story', {id: item.id})
                 }}
@@ -54,10 +61,13 @@ class StoriesList extends React.Component<any, any> {
                     <View style={styles.imageContainer}>
                         {
                             item._embedded.hasOwnProperty("wp:featuredmedia") ? (
-                                <Image 
-                                    style={styles.image}
-                                    source={{uri: item._embedded['wp:featuredmedia'][0].source_url}}
-                                />
+                                item._embedded['wp:featuredmedia'][0].source_url ? (
+                                    <Image 
+                                        style={styles.image}
+                                        source={{uri: item._embedded['wp:featuredmedia'][0].source_url}}
+                                    />
+                                ) : null
+                                
                             ) : null
                             
                         }
@@ -74,15 +84,16 @@ class StoriesList extends React.Component<any, any> {
 
     render() {
 
-        return (
-            <View style={styles.container}>
-                {this.state.loading ? <Text>Loading...</Text> : (
-                    <FlatList
-                        data={this.state.stories}
-                        renderItem={({item}) => this.displayStory(item)}
-                    />
-                )} 
-            </View>  
+        return ( 
+            <SafeAreaView style={styles.container}>
+                {this.state.loading ? <Text>Loading...</Text> : null}
+                {this.props.title? (<Text style={styles.heading}>{this.props.title}</Text>): null}
+                {
+                    this.state.stories.error ? this.networkErrorMsg() : (
+                        this.state.stories.length ? this.displayStory() : <Text>No story found</Text>
+                    )
+                }
+            </SafeAreaView> 
         );
     }
 }
