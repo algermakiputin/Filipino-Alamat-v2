@@ -14,6 +14,7 @@ import themeStyles from '../../../app/styles/theme.styles';
 class CategoryScreen extends React.Component<any,any> {
     
     private ref:any;
+    
     constructor(props:any) {
         super(props)  
         this.ref = React.createRef();

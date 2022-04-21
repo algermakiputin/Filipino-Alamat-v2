@@ -6,9 +6,9 @@ const errorStatus = {
     message: "Network error, please check your internet connection and try again"
 };
 
-export const get = async () => {
+export const get = async (query = '') => {
     let data = [];
-    await axios.get(url + 'alamat_posts?_embed&category=kalikasan')
+    await axios.get(url + 'alamat_posts?_embed&search=' + query)
         .then(res => {  
             data = res.data;
         })

@@ -41,7 +41,7 @@ class StoriesList extends React.Component<any, any> {
         else if (this.props.recommendations)
             stories = await getRecommendations(); 
         else 
-            stories = await get();
+            stories = await get(query);
          
         this.setState({stories: stories,loading:false});
     }
@@ -49,8 +49,7 @@ class StoriesList extends React.Component<any, any> {
     displayStory() {  
         return this.state.stories.map((item:any, key:number) => {   
             let excerpt = item.excerpt.rendered.replace(/<p>|<\/p>/g, '');
-            const shortenExcerpt = excerpt.substring(0, 68) + '...'; 
-            console.log(item);
+            const shortenExcerpt = excerpt.substring(0, 68) + '...';  
             return <TouchableOpacity
                 key={key}
                 onPress={() => { 
@@ -61,10 +60,13 @@ class StoriesList extends React.Component<any, any> {
                     <View style={styles.imageContainer}>
                         {
                             item._embedded.hasOwnProperty("wp:featuredmedia") ? (
-                                <Image 
-                                    style={styles.image}
-                                    source={{uri: item._embedded['wp:featuredmedia'][0].source_url}}
-                                />
+                                item._embedded['wp:featuredmedia'][0].source_url ? (
+                                    <Image 
+                                        style={styles.image}
+                                        source={{uri: item._embedded['wp:featuredmedia'][0].source_url}}
+                                    />
+                                ) : null
+                                
                             ) : null
                             
                         }
@@ -91,7 +93,7 @@ class StoriesList extends React.Component<any, any> {
                 {this.props.title? (<Text style={styles.heading}>{this.props.title}</Text>): null}
                 {
                     this.state.stories.error ? this.networkErrorMsg() : (
-                        this.state.stories.length ? this.displayStory() : <Text>No story</Text>
+                        this.state.stories.length ? this.displayStory() : <Text>No story found</Text>
                     )
                 }
             </SafeAreaView>

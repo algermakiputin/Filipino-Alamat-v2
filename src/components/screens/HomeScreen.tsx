@@ -45,6 +45,10 @@ class HomeScreen extends React.Component<any, any> {
                         navigation={this.props.navigation}
                         recommendations={true}
                         />  
+                    <StoriesList 
+                        title="Recently Added" 
+                        navigation={this.props.navigation} 
+                        />
                 </ScrollView>
             </SafeAreaView>
         )
