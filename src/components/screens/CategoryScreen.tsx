@@ -39,7 +39,7 @@ class CategoryScreen extends React.Component<any,any> {
                     <Text style={styles.heading}>
                         { this.state.query ? <Text>Search Result for: "{this.state.query}"</Text> : (
                             <Text>Mga alamat tungkol sa {this.props.route.params.name}</Text>
-                        )}
+                        )} 
                     </Text>    
                 </View>
                 <ScrollView>
@@ -50,7 +50,7 @@ class CategoryScreen extends React.Component<any,any> {
                         category={this.props.route.params.id}
                         query={this.state.query} 
                         />
-                </ScrollView>
+                </ScrollView> 
             </SafeAreaView>
         );
     }

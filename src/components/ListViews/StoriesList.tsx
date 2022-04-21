@@ -5,7 +5,8 @@ import {
     StyleSheet,
     View, 
     TouchableOpacity,
-    Image
+    Image,
+    FlatList
 } from "react-native"; 
 import theme from '../../../app/styles/theme.styles';
 import {
@@ -37,7 +38,7 @@ class StoriesList extends React.Component<any, any> {
     async fetchStories(query = "") { 
         let stories = [];  
         if (this.props.category) 
-            stories = await getAlamatByCategory(this.props.category, query);
+            stories = await getAlamatByCategory(this.props.category, query); 
         else if (this.props.recommendations)
             stories = await getRecommendations(); 
         else 
@@ -51,7 +52,7 @@ class StoriesList extends React.Component<any, any> {
             let excerpt = item.excerpt.rendered.replace(/<p>|<\/p>/g, '');
             const shortenExcerpt = excerpt.substring(0, 68) + '...';  
             return <TouchableOpacity
-                key={key}
+                key={key} 
                 onPress={() => { 
                     this.props.navigation.navigate('Story', {id: item.id})
                 }}
@@ -78,16 +79,12 @@ class StoriesList extends React.Component<any, any> {
                     </View>
                 </View>
             </TouchableOpacity>
-        }); 
-    }
-
-    networkErrorMsg() {
-        return <Text>{this.state.stories.message}</Text>
-    }
+        ) 
+    } 
 
     render() {
 
-        return (
+        return ( 
             <SafeAreaView style={styles.container}>
                 {this.state.loading ? <Text>Loading...</Text> : null}
                 {this.props.title? (<Text style={styles.heading}>{this.props.title}</Text>): null}
@@ -96,7 +93,7 @@ class StoriesList extends React.Component<any, any> {
                         this.state.stories.length ? this.displayStory() : <Text>No story found</Text>
                     )
                 }
-            </SafeAreaView>
+            </SafeAreaView> 
         );
     }
 }
