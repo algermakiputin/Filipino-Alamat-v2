@@ -7,15 +7,20 @@ const errorStatus = {
 };
 
 export const get = async (query = '') => {
-    let data = [];
+    let response = [];
     await axios.get(url + 'alamat_posts?_embed&search=' + query)
         .then(res => {  
-            data = res.data;
+            response = res;
         })
         .catch(() => { 
             data = errorStatus;
-        }) 
-    return data;
+        })  
+    console.log(response);
+    return {
+        data: response.data,
+        totalRecords:  response.headers['x-wp-total'],
+        totalPages: response['x-wp-totalpages']
+    };
 }
 // This function accept alamat ID as parameter and returns alamat object
 export const getById = async (id) => {
@@ -31,28 +36,35 @@ export const getById = async (id) => {
 }
 
 export const getAlamatByCategory = async(id,query = '') => { 
-    let data = [];
+    let response = [];
     await axios.get(url + 'alamat_posts?_embed&alamat=' + id + '&search=' + query)
         .then(res => { 
-            data = res.data; 
+            response = res; 
         })
         .catch(() => { 
             data = errorStatus;
         })     
-    return data;
+    return {
+        data: response.data,
+        totalRecords:  response.headers['x-wp-total'],
+        totalPages: response['x-wp-totalpages']
+    };
 }
 
 export const getRecommendations = async() => { 
-    let data = [];
+    let response = [];
     await axios.get('http://192.168.1.6:8888/filipinoalamat/wp-json/alamat/api/recommendations?_embed')
         .then(res => { 
-            data = res.data; 
+            response = res; 
         })
         .catch(() => { 
             data = errorStatus;
         })     
-    console.log(data);
-    return data;
+    return {
+        data: response.data,
+        totalRecords:  response.headers['x-wp-total'],
+        totalPages: response['x-wp-totalpages']
+    };
 }
 
 export const getCategories = async () => {
@@ -69,13 +81,17 @@ export const getCategories = async () => {
 }
 
 export const search = (query) => {
-    let data = [];
+    let response = [];
     axios.get(url + '?search=' + query)
         .then(res => {
-            data = res.data;
+            response = res;
         })
         .catch(() => {
             data = errorStatus;
         }) 
-    return data;
+    return {
+        data: response.data,
+        totalRecords:  response.headers['x-wp-total'],
+        totalPages: response['x-wp-totalpages']
+    };
 }

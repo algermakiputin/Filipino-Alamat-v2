@@ -26,7 +26,8 @@ class StoriesList extends React.Component<any, any> {
                 error:Boolean
             },
             loading:true,
-            query: ''
+            query: '',
+            totalRecords: 0
         } 
     }   
 
@@ -35,15 +36,19 @@ class StoriesList extends React.Component<any, any> {
     }
 
     async fetchStories(query = "") { 
-        let stories = [];  
+        let result:any = [];
+          
         if (this.props.category) 
-            stories = await getAlamatByCategory(this.props.category, query);
+            result = await await getAlamatByCategory(this.props.category, query);
         else if (this.props.recommendations)
-            stories = await getRecommendations(); 
+            result = await await getRecommendations(); 
         else 
-            stories = await get(query);
-         
-        this.setState({stories: stories,loading:false});
+            result = await await get(query);
+          
+        if (this.props.updateRecords)
+            this.props.updateRecords(result.totalRecords);
+
+        this.setState({stories: result.data,loading:false});
     }
 
     displayStory() {  

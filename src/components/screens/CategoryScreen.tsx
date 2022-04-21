@@ -6,7 +6,8 @@ import {
     Image,
     ScrollView,
     Text,
-    TextInput
+    TextInput,
+    TouchableOpacity
 } from 'react-native';
 import StoriesList from '../ListViews/StoriesList';
 import themeStyles from '../../../app/styles/theme.styles';
@@ -19,37 +20,83 @@ class CategoryScreen extends React.Component<any,any> {
         super(props)  
         this.ref = React.createRef();
         this.state = {
-            query: ''
+            query: '',
+            totalRecords: 0,
+            page: 1,
+            totalPage: 3
         }
+        this.updateTotalRecords = this.updateTotalRecords.bind(this); 
+    }
+
+    updateTotalRecords(total:number) {
+        this.setState({totalRecords: total});
+    } 
+
+    nextButton() {
+        return (
+            <TouchableOpacity 
+                style={styles.btn}
+                onPress={() => this.turnPage('next')}>
+                <Text style={styles.btnText}>Next</Text>
+            </TouchableOpacity>
+        )
+    }
+
+    prevButton() {
+        return (
+            <TouchableOpacity 
+                style={styles.btn}
+                onPress={() => this.turnPage('prev')}>
+                <Text style={styles.btnText}>Prev</Text>
+            </TouchableOpacity>
+        )
+    }
+
+    turnPage(action:String) {
+        if (action === 'next') 
+            return this.state.page < this.state.totalPage ? this.setState({page: this.state.page + 1}) : null;
+        
+        if (this.state.page > 1)
+            this.setState({page: this.state.page -1});
+            
     }
 
     render() {
         return (
             <SafeAreaView>
-                <View style={styles.container}> 
-                    <TextInput 
-                        style={styles.searchbox}
-                        placeholder="Search..."
-                        placeholderTextColor={"#333"} 
-                        onChangeText={(text) => {
-                            this.setState({query:text})
-                            this.ref.current.fetchStories(text);
-                        }}
-                    />
-                    <Text style={styles.heading}>
-                        { this.state.query ? <Text>Search Result for: "{this.state.query}"</Text> : (
-                            <Text>Mga alamat tungkol sa {this.props.route.params.name}</Text>
-                        )}
-                    </Text>    
-                </View>
                 <ScrollView>
+                    <View style={styles.container}> 
+                        <TextInput 
+                            style={styles.searchbox}
+                            placeholder="Search..."
+                            placeholderTextColor={"#333"} 
+                            onChangeText={(text) => {
+                                this.setState({query:text})
+                                this.ref.current.fetchStories(text);
+                            }}
+                        />
+                        <Text style={styles.heading}>
+                            { this.state.query ? <Text>Search Result for: "{this.state.query}"</Text> : (
+                                <Text>Mga alamat tungkol sa {this.props.route.params.name}</Text>
+                            )}
+                        </Text>  
+                        <Text>Total Stories: {this.state.totalRecords}</Text> 
+                        <Text>Page: {this.state.page}</Text>  
+                    </View> 
                     <StoriesList
                         ref={this.ref} 
                         title='' 
                         navigation={this.props.navigation} 
                         category={this.props.route.params.id}
                         query={this.state.query} 
+                        updateRecords={this.updateTotalRecords}
                         />
+                    <View style={styles.btnsContainer}>
+                        <View style={styles.btnWrapper}>
+                            { this.prevButton() }
+                            { this.nextButton() }
+                        </View>
+                    </View>
                 </ScrollView>
             </SafeAreaView>
         );
@@ -100,6 +147,29 @@ const styles = StyleSheet.create({
         textAlign:'center',
         paddingTop:20,
     
+    },
+    btnsContainer: {
+        paddingLeft:15,
+        paddingRight:15
+    },
+    btnWrapper: { 
+        display:'flex', 
+        flexDirection:'row',
+        marginLeft:'auto',
+    },
+    btn: {
+        width:'auto', 
+        backgroundColor: themeStyles.MAIN_COLOR,
+        marginRight:5,
+        marginLeft:5,
+        padding:6,
+        paddingRight:12,
+        paddingLeft:12,
+        borderRadius:1
+    },
+    btnText: {
+        fontSize:themeStyles.FONT_SIZE_SMALL,
+        color:'#ffffff'   
     }
 });
 

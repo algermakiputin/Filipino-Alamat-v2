@@ -16,5 +16,6 @@ export default {
     FONT_SIZE_LARGE:scaleFontSize(24),
     headingColor:"#323538",
     bodyText: "rgba(0,0,0,0.55)",
-    lineHeight: scaleFontSize(30)
+    lineHeight: scaleFontSize(30),
+    MAIN_COLOR: '#52A0FE'
 }
