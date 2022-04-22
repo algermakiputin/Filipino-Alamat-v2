@@ -7,10 +7,8 @@ import {
     View,
     StyleSheet,
     Dimensions,
-    Animated,
-    useWindowDimensions,
-} from "react-native";
-import Carousel from 'react-native-snap-carousel';
+    Animated 
+} from "react-native"; 
 import LinearGradient from 'react-native-linear-gradient';
 import { getCategories } from "../api/Alamat"; 
 import { ScrollView } from "react-native-gesture-handler";
@@ -20,8 +18,7 @@ const images = {
     hayop: require('../../assets/images/categories/hayop.jpg'),
     tao: require('../../assets/images/categories/tao.jpg')
 }
-const windowWidth = Dimensions.get('window').width; 
- 
+const windowWidth = Dimensions.get('window').width;  
 
 function Category(props:any) {
     const scrollX = React.useRef(new Animated.Value(0)).current; 

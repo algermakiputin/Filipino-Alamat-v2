@@ -35,19 +35,21 @@ class StoriesList extends React.Component<any, any> {
         this.fetchStories();
     }
 
-    async fetchStories(query = "") { 
+    async fetchStories(query = "", page = 1, categoryId = 0) { 
         let result:any = [];
-          
-        if (this.props.category) 
-            result = await await getAlamatByCategory(this.props.category, query);
+        if (this.props.category) {
+            let category = this.props.category ? this.props.category : categoryId;
+            result = await await getAlamatByCategory(category, query, page); 
+        } 
         else if (this.props.recommendations)
             result = await await getRecommendations(); 
         else 
             result = await await get(query);
           
-        if (this.props.updateRecords)
+        if (this.props.updateRecords) {
             this.props.updateRecords(result.totalRecords);
-
+            this.props.updateTotalPage(result.totalPages);
+        } 
         this.setState({stories: result.data,loading:false});
     }
 

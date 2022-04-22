@@ -23,18 +23,24 @@ class CategoryScreen extends React.Component<any,any> {
             query: '',
             totalRecords: 0,
             page: 1,
-            totalPage: 3
+            totalPage: 1 
         }
-        this.updateTotalRecords = this.updateTotalRecords.bind(this); 
+        this.updateTotalRecords = this.updateTotalRecords.bind(this);
+        this.updateTotalPage = this.updateTotalPage.bind(this); 
     }
 
     updateTotalRecords(total:number) {
         this.setState({totalRecords: total});
     } 
 
+    updateTotalPage(total: number) {
+        this.setState({totalPage: 2});
+    }
+
     nextButton() {
         return (
-            <TouchableOpacity 
+            <TouchableOpacity
+                disabled={ this.state.page >= this.state.totalPage}
                 style={styles.btn}
                 onPress={() => this.turnPage('next')}>
                 <Text style={styles.btnText}>Next</Text>
@@ -44,7 +50,8 @@ class CategoryScreen extends React.Component<any,any> {
 
     prevButton() {
         return (
-            <TouchableOpacity 
+            <TouchableOpacity
+                disabled={this.state.page === 1}
                 style={styles.btn}
                 onPress={() => this.turnPage('prev')}>
                 <Text style={styles.btnText}>Prev</Text>
@@ -53,12 +60,16 @@ class CategoryScreen extends React.Component<any,any> {
     }
 
     turnPage(action:String) {
-        if (action === 'next') 
-            return this.state.page < this.state.totalPage ? this.setState({page: this.state.page + 1}) : null;
-        
-        if (this.state.page > 1)
-            this.setState({page: this.state.page -1});
-            
+        let page = 0;
+        if (action === "next") {
+            page = this.state.page + 1;
+            this.setState({page: page});
+        }else if (action === "prev") {
+            page = this.state.page - 1;
+            this.setState({page: page}); 
+        } 
+       
+        this.ref.current.fetchStories('', page, this.props.route.params.id);
     }
 
     render() {
@@ -80,8 +91,7 @@ class CategoryScreen extends React.Component<any,any> {
                                 <Text>Mga alamat tungkol sa {this.props.route.params.name}</Text>
                             )}
                         </Text>  
-                        <Text>Total Stories: {this.state.totalRecords}</Text> 
-                        <Text>Page: {this.state.page}</Text>  
+                        <Text>Total Stories: {this.state.totalRecords}</Text>  
                     </View> 
                     <StoriesList
                         ref={this.ref} 
@@ -90,9 +100,11 @@ class CategoryScreen extends React.Component<any,any> {
                         category={this.props.route.params.id}
                         query={this.state.query} 
                         updateRecords={this.updateTotalRecords}
+                        updateTotalPage={this.updateTotalPage}
                         />
                     <View style={styles.btnsContainer}>
                         <View style={styles.btnWrapper}>
+                            <Text>Page: {this.state.page} / {this.state.totalPage}</Text>
                             { this.prevButton() }
                             { this.nextButton() }
                         </View>
@@ -145,8 +157,7 @@ const styles = StyleSheet.create({
         fontSize: themeStyles.FONT_SIZE_LARGE,
         fontWeight:'bold',
         textAlign:'center',
-        paddingTop:20,
-    
+        paddingTop:20, 
     },
     btnsContainer: {
         paddingLeft:15,
@@ -155,7 +166,8 @@ const styles = StyleSheet.create({
     btnWrapper: { 
         display:'flex', 
         flexDirection:'row',
-        marginLeft:'auto',
+        marginLeft:'auto', 
+        alignItems:'center'
     },
     btn: {
         width:'auto', 

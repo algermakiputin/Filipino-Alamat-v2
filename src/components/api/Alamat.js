@@ -19,7 +19,7 @@ export const get = async (query = '') => {
     return {
         data: response.data,
         totalRecords:  response.headers['x-wp-total'],
-        totalPages: response['x-wp-totalpages']
+        totalPages: response.headers['x-wp-totalpages']
     };
 }
 // This function accept alamat ID as parameter and returns alamat object
@@ -35,9 +35,10 @@ export const getById = async (id) => {
     return data; 
 }
 
-export const getAlamatByCategory = async(id,query = '') => { 
+export const getAlamatByCategory = async(id,query = '', page=1) => { 
     let response = [];
-    await axios.get(url + 'alamat_posts?_embed&alamat=' + id + '&search=' + query)
+    const endpoint = url + 'alamat_posts?_embed&alamat=' + id + '&search=' + query + '&per_page=10&page=' + page;
+    await axios.get(endpoint)
         .then(res => { 
             response = res; 
         })
@@ -47,7 +48,7 @@ export const getAlamatByCategory = async(id,query = '') => {
     return {
         data: response.data,
         totalRecords:  response.headers['x-wp-total'],
-        totalPages: response['x-wp-totalpages']
+        totalPages: response.headers['x-wp-totalpages']
     };
 }
 
@@ -63,7 +64,7 @@ export const getRecommendations = async() => {
     return {
         data: response.data,
         totalRecords:  response.headers['x-wp-total'],
-        totalPages: response['x-wp-totalpages']
+        totalPages: response.headers['x-wp-totalpages']
     };
 }
 
@@ -92,6 +93,6 @@ export const search = (query) => {
     return {
         data: response.data,
         totalRecords:  response.headers['x-wp-total'],
-        totalPages: response['x-wp-totalpages']
+        totalPages: response.headers['x-wp-totalpages']
     };
 }
