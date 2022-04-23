@@ -34,14 +34,14 @@ class CategoryScreen extends React.Component<any,any> {
     } 
 
     updateTotalPage(total: number) {
-        this.setState({totalPage: 2});
+        this.setState({totalPage: total});
     }
 
     nextButton() {
         return (
             <TouchableOpacity
                 disabled={ this.state.page >= this.state.totalPage}
-                style={styles.btn}
+                style={this.state.page >= this.state.totalPage ? styles.btnDisabled : styles.btn}
                 onPress={() => this.turnPage('next')}>
                 <Text style={styles.btnText}>Next</Text>
             </TouchableOpacity>
@@ -52,7 +52,7 @@ class CategoryScreen extends React.Component<any,any> {
         return (
             <TouchableOpacity
                 disabled={this.state.page === 1}
-                style={styles.btn}
+                style={this.state.page === 1 ? styles.btnDisabled : styles.btn}
                 onPress={() => this.turnPage('prev')}>
                 <Text style={styles.btnText}>Prev</Text>
             </TouchableOpacity>
@@ -178,6 +178,17 @@ const styles = StyleSheet.create({
         paddingRight:12,
         paddingLeft:12,
         borderRadius:1
+    },
+    btnDisabled: {
+        width:'auto', 
+        backgroundColor: themeStyles.MAIN_COLOR,
+        marginRight:5,
+        marginLeft:5,
+        padding:6,
+        paddingRight:12,
+        paddingLeft:12,
+        borderRadius:1,
+        opacity:0.75
     },
     btnText: {
         fontSize:themeStyles.FONT_SIZE_SMALL,

@@ -12,6 +12,7 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import { getCategories } from "../api/Alamat"; 
 import { ScrollView } from "react-native-gesture-handler";
+import axios from "axios";
 
 const images = {
     prutas: require('../../assets/images/categories/fruit.jpg'),

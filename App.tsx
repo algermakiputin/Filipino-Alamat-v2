@@ -43,7 +43,7 @@ const tabsOptions = (navigation:any) => ({
   headerStyle: {
     backgroundColor:"#52A0FE"
   },
-  headerShown:false,
+  headerShown:false
 });
 
 const TabScreenOptions = (route:any) => ({
