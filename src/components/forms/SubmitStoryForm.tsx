@@ -125,10 +125,10 @@ const styles = StyleSheet.create({
         backgroundColor:"#f0f7fe",
     },
     wrapper: {
-        //minHeight:Dimensions.get('screen').height
+        minHeight:Dimensions.get('screen').height - 180
     },
     label: {
-        fontSize: themeStyles.FONT_SIZE_REGULAR
+        fontSize: themeStyles.FONT_SIZE_SMALL
     },
     input: {
         backgroundColor:"#ffffff",
@@ -171,8 +171,7 @@ const styles = StyleSheet.create({
     },
     heading: {
         fontSize: themeStyles.FONT_SIZE_LARGE,
-        marginTop:10,
-        marginBottom:10,
+        marginTop:10, 
         color:themeStyles.bodyText
     },
     textDanger: {
