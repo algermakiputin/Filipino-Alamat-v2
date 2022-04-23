@@ -55,7 +55,7 @@ const TabScreenOptions = (route:any) => ({
     let index = route.name == "Home" ? 0 : 1;
     return <Image style={styles.tabIcon} source={images[index]} />
   }, 
-  tabBarShowLabel:false
+  tabBarShowLabel:false,  
 });
 
 function HomeTabs() {
