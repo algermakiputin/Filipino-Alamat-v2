@@ -14,8 +14,7 @@ export const get = async (query = '') => {
         })
         .catch(() => { 
             data = errorStatus;
-        })  
-    console.log(response);
+        })   
     return {
         data: response.data,
         totalRecords:  response.headers['x-wp-total'],

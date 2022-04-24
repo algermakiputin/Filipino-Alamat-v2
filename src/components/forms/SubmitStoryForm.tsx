@@ -8,14 +8,14 @@ import {
     View,
     ScrollView,
     TouchableOpacity,
-    Dimensions,
-    AsyncStorage
+    Dimensions
 } from 'react-native';
+import AsyncStorage from "@react-native-community/async-storage";
 import themeStyles from "../../../app/styles/theme.styles";  
-
+import {USERNAME, PASSWORD, HOST_NAME} from '@env';
 
 interface IState {
-    name: String,
+    title: String,
     category: String,
     content: String,
     errors: Array<String>,
@@ -25,16 +25,18 @@ interface IState {
 class SubmitStoryForm extends React.Component<any, IState> {
 
     private storage = AsyncStorage;
+    private initialState = {
+        title: '',
+        category: '',
+        content: '',
+        errors: [],
+        wordCount: 0
+    }
+
     constructor(props:any) {
         super(props); 
-        this.state = {
-            name: '',
-            category: '',
-            content: '',
-            errors: [],
-            wordCount: 0
-        }
-    } 
+        this.state = this.initialState
+    }  
 
     validateFields() {
         let errorrs = [];
@@ -42,12 +44,13 @@ class SubmitStoryForm extends React.Component<any, IState> {
             errorrs.push('Category is required');
         if (this.state.content === '')
             errorrs.push('Content is required');
-        if (this.state.name === '')
+        if (this.state.title === '')
             errorrs.push('Title is required');
         if (this.state.wordCount < 100) 
             errorrs.push('Story content must be more than 100 words');
 
         this.setState({errors: errorrs});
+        return errorrs;
     }
 
     countWords() {
@@ -55,20 +58,35 @@ class SubmitStoryForm extends React.Component<any, IState> {
         this.setState({wordCount: wordCount});
     }   
 
-    submitHandler() {
-        this.store()
-        // this.validateFields();
-
-        // if (!this.state.errors) {
-        //     console.log('submitting the form');
-        // }
+    async submitHandler() {
+        let token: String | null = ''; 
+        const error = this.validateFields(); 
+        if (!error) {
+            await this.getToken();   
+            this.storage.getItem('token').then((res) => this.storeStory(res)); 
+        }
     } 
 
-    store() {  
+    storeStory(token: String | null) { 
+        axios.post(HOST_NAME + 'wp-json/wp/v2/alamat_posts', {
+                    'title': this.state.title,
+                    'content': this.state.content + '\n' + 'Category: ' + this.state.category
+                }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization' : `Bearer ${token}`
+                }
+            }).then(res => {
+                this.setState(this.initialState);
+            })
+            .catch(err => console.log(err)) 
+    }
+
+    getToken() {  
         const url = 'http://192.168.1.6:8888/filipinoalamat//wp-json/jwt-auth/v1/token'
         axios.post(url, {
-                username: 'algermakiputin',
-                password:'Elfspier123_'
+                username: USERNAME,
+                password: PASSWORD
             })
             .then(async res => {
                 await this.storage.setItem('token', res.data.token); 
@@ -95,8 +113,9 @@ class SubmitStoryForm extends React.Component<any, IState> {
                         <Text style={styles.label}>Title</Text>
                         <TextInput 
                             placeholder="Ex: Alamat ng Pinya" 
-                            style={styles.input}
-                            onChangeText={(text) => this.setState({name: text})}
+                            style={styles.input} 
+                            editable={true}
+                            onChangeText={(text) => this.setState({title: text})}
                             />
                     </View>
                     <View style={styles.formGroup}>
