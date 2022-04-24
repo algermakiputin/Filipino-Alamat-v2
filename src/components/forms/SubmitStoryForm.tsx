@@ -1,3 +1,4 @@
+import axios from "axios";
 import React from "react";
 import {
     Text,
@@ -7,9 +8,10 @@ import {
     View,
     ScrollView,
     TouchableOpacity,
-    Dimensions
+    Dimensions,
+    AsyncStorage
 } from 'react-native';
-import themeStyles from "../../../app/styles/theme.styles";
+import themeStyles from "../../../app/styles/theme.styles";  
 
 
 interface IState {
@@ -22,6 +24,7 @@ interface IState {
 
 class SubmitStoryForm extends React.Component<any, IState> {
 
+    private storage = AsyncStorage;
     constructor(props:any) {
         super(props); 
         this.state = {
@@ -53,12 +56,25 @@ class SubmitStoryForm extends React.Component<any, IState> {
     }   
 
     submitHandler() {
-        this.validateFields();
+        this.store()
+        // this.validateFields();
 
-        if (!this.state.errors) {
-            console.log('submitting the form');
-        }
+        // if (!this.state.errors) {
+        //     console.log('submitting the form');
+        // }
     } 
+
+    store() {  
+        const url = 'http://192.168.1.6:8888/filipinoalamat//wp-json/jwt-auth/v1/token'
+        axios.post(url, {
+                username: 'algermakiputin',
+                password:'Elfspier123_'
+            })
+            .then(async res => {
+                await this.storage.setItem('token', res.data.token); 
+            })
+            .catch(err => console.log("error: " +err));
+    }
 
     displayErrors() {
         return this.state.errors.map((item, key) => {
