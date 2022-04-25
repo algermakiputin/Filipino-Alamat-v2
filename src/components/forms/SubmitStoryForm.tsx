@@ -15,23 +15,35 @@ import themeStyles from "../../../app/styles/theme.styles";
 import {USERNAME, PASSWORD, HOST_NAME} from '@env';
 
 interface IState {
+    name: String,
     title: String,
     category: String,
     content: String,
     errors: Array<String>,
-    wordCount: Number
+    wordCount: Number,
+    success:Boolean,
+    loading:Boolean
 }
 
 class SubmitStoryForm extends React.Component<any, IState> {
 
     private storage = AsyncStorage;
     private initialState = {
+        name:'',
         title: '',
         category: '',
         content: '',
         errors: [],
-        wordCount: 0
+        wordCount: 0,
+        success: false,
+        loading: false
     }
+
+    private title = React.createRef<TextInput>();
+    private category = React.createRef<TextInput>();
+    private content = React.createRef<TextInput>();
+    private name = React.createRef<TextInput>();
+    private scroll = React.createRef<ScrollView>();
 
     constructor(props:any) {
         super(props); 
@@ -47,8 +59,9 @@ class SubmitStoryForm extends React.Component<any, IState> {
         if (this.state.title === '')
             errorrs.push('Title is required');
         if (this.state.wordCount < 100) 
-            errorrs.push('Story content must be more than 100 words');
+            errorrs.push('Story content must be at least 100 words');
 
+        this.scrollToTop();
         this.setState({errors: errorrs});
         return errorrs;
     }
@@ -60,24 +73,36 @@ class SubmitStoryForm extends React.Component<any, IState> {
 
     async submitHandler() {
         let token: String | null = ''; 
-        const error = this.validateFields(); 
-        if (!error) {
+        const error = this.validateFields();  
+
+        if (!error.length) { 
+            this.setState({loading:true})
             await this.getToken();   
-            this.storage.getItem('token').then((res) => this.storeStory(res)); 
+            this.storage.getItem('token').then((res) => this.storeStory(res));  
         }
     } 
+
+    scrollToTop() {
+        this.scroll.current?.scrollTo({x:0,y:0,animated:true});
+    }
 
     storeStory(token: String | null) { 
         axios.post(HOST_NAME + 'wp-json/wp/v2/alamat_posts', {
                     'title': this.state.title,
-                    'content': this.state.content + '\n' + 'Category: ' + this.state.category
+                    'content': this.state.content + '\n' + 'Category: ' + this.state.category + '\n' + 'Author: ' + this.state.name
                 }, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization' : `Bearer ${token}`
                 }
             }).then(res => {
-                this.setState(this.initialState);
+                this.title.current?.clear();
+                this.category.current?.clear();
+                this.content.current?.clear();
+                this.name.current?.clear();  
+                this.setState({success: true});
+                this.setState({loading:false})
+                this.scrollToTop();
             })
             .catch(err => console.log(err)) 
     }
@@ -99,19 +124,38 @@ class SubmitStoryForm extends React.Component<any, IState> {
             return <Text key={key} style={styles.textDanger}>{item}</Text>
         })
     }
+
+    displaySuccess() { 
+        setTimeout(() => this.setState({success: false}), 5000)
+        return <Text style={{color:'green'}}>Story submitted successfully</Text>
+    }
     
     render() {
         return (
             <SafeAreaView>
-                <ScrollView style={styles.container}>
+                <ScrollView 
+                    ref={this.scroll}
+                    style={styles.container}>
                     <View style={styles.wrapper}>
                     <Text style={styles.heading}>Submit your story and let a thousand read</Text>
                     <View style={styles.formGroup}>
-                        {this.state.errors.length ? this.displayErrors() : null }
+                        { this.state.errors.length ? this.displayErrors() : null }
+                        { this.state.success ? this.displaySuccess() : null } 
+                    </View>
+                    <View style={styles.formGroup}>
+                        <Text style={styles.label}>Your Name</Text>
+                        <TextInput 
+                            ref={this.name}
+                            placeholder="Ex: Juan Dela Cruz" 
+                            style={styles.input} 
+                            editable={true}
+                            onChangeText={(text) => this.setState({name: text})}
+                            />
                     </View>
                     <View style={styles.formGroup}>
                         <Text style={styles.label}>Title</Text>
                         <TextInput 
+                            ref={this.title}
                             placeholder="Ex: Alamat ng Pinya" 
                             style={styles.input} 
                             editable={true}
@@ -121,6 +165,7 @@ class SubmitStoryForm extends React.Component<any, IState> {
                     <View style={styles.formGroup}>
                         <Text style={styles.label}>Category</Text>
                         <TextInput 
+                            ref={this.category}
                             placeholder="Ex: Prutas" 
                             style={styles.input}
                             onChangeText={(text) => this.setState({category: text})}
@@ -129,6 +174,7 @@ class SubmitStoryForm extends React.Component<any, IState> {
                     <View style={styles.formGroup}>
                         <Text style={styles.label}>Story Content (Min of 100 words) Word count: {this.state.wordCount.toString()}</Text>
                         <TextInput 
+                            ref={this.content}
                             placeholder="Ex: Noong unang panahon, panahon pa ng hapon..." 
                             multiline={true}
                             numberOfLines={8}
