@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import StoriesList from '../ListViews/StoriesList';
 import themeStyles from '../../../app/styles/theme.styles';
+import { BannerAd, TestIds, BannerAdSize} from "@react-native-admob/admob";
 
 class CategoryScreen extends React.Component<any,any> {
     
@@ -109,7 +110,8 @@ class CategoryScreen extends React.Component<any,any> {
                             { this.nextButton() }
                         </View>
                     </View>
-                </ScrollView>
+                    <BannerAd size={BannerAdSize.ADAPTIVE_BANNER} unitId={TestIds.BANNER} onAdFailedToLoad={() => console.log('error')} />
+                </ScrollView>    
             </SafeAreaView>
         );
     }
@@ -161,7 +163,8 @@ const styles = StyleSheet.create({
     },
     btnsContainer: {
         paddingLeft:15,
-        paddingRight:15
+        paddingRight:15,
+        marginBottom:20
     },
     btnWrapper: { 
         display:'flex', 
