@@ -27,7 +27,8 @@ class StoriesList extends React.Component<any, any> {
             },
             loading:true,
             query: '',
-            totalRecords: 0
+            totalRecords: 0,
+            clicks:0
         } 
     }   
 
@@ -45,7 +46,7 @@ class StoriesList extends React.Component<any, any> {
             result = await await getRecommendations(); 
         else 
             result = await await get(query);
-          
+        
         if (this.props.updateRecords) {
             this.props.updateRecords(result.totalRecords);
             this.props.updateTotalPage(result.totalPages);
@@ -57,10 +58,11 @@ class StoriesList extends React.Component<any, any> {
         return this.state.stories.map((item:any, key:number) => {   
             let excerpt = item.excerpt.rendered.replace(/<p>|<\/p>/g, '');
             const shortenExcerpt = excerpt.substring(0, 68) + '...';  
+            const id = item.id;
             return <TouchableOpacity
                 key={key}
-                onPress={() => { 
-                    this.props.navigation.navigate('Story', {id: item.id})
+                onPress={() => {  
+                    this.props.navigation.navigate('Story', {id: id})
                 }}
                 >
                 <View style={styles.listItem}>

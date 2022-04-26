@@ -10,6 +10,7 @@ import {
 } from "react-native"; 
 import theme from '../../../app/styles/theme.styles';
 import { getById } from './../api/Alamat';
+import { AdmobBanner } from "../Admob";
  
 
 class StoryPage extends React.Component<any, any> {
@@ -17,30 +18,29 @@ class StoryPage extends React.Component<any, any> {
     constructor(props:any) {
         super(props)
         this.state = {
-            title: String,
-            content: Object,
-            imageURL: String,
-            category: String
+            title: '',
+            content: '',
+            imageURL: '',
+            category: ''
         }
         
     }
 
-    formatContent(content:string) {
-        let text:any = [];
-        const divider = content.split("</p>");
-        divider.map((value, key) => {
-            const cleanString = value.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, ''); 
-            text.push( <Text key={key} style={styles.paragraph}>{cleanString}</Text> );
-        }); 
-        return text;
+    formatContent() { 
+        const divider = this.state.content.split("</p>");
+        return divider.map((value:any, key:number) => {
+            const cleanString = value.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, '');
+            console.log(cleanString); 
+            return <Text key={key} style={styles.paragraph}>{cleanString.trim()}</Text>;
+        });   
     }
 
     async componentDidMount() {
-        const id = this.props.route.params.id; 
-        const story:any = await getById(id);  
+        const id = this.props.route.params.id;  
+        const story:any = await getById(id);   
         this.setState({
             title: story.title.rendered,
-            content: this.formatContent(story.content.rendered),
+            content: story.content.rendered,
             imageURL: story._embedded['wp:featuredmedia'][0].source_url,
             category: story._embedded['wp:term'][0][0].name 
         }); 
@@ -50,19 +50,22 @@ class StoryPage extends React.Component<any, any> {
         return (
             <SafeAreaView>
                 <ScrollView>
-                    <Image 
-                        style={styles.image}
-                        source={{
-                            uri: this.state.imageURL
-                        }}
-                    />
-                    <View style={styles.container}>
-                        
-                        <Text>{this.state.image}</Text> 
+                    {
+                        this.state.imageURL ? (
+                            <Image 
+                                style={styles.image}
+                                source={{
+                                    uri: this.state.imageURL
+                                }}
+                            />
+                        ) : null
+                    } 
+                    <View style={styles.container}>  
                         <Text style={styles.category}>Category: {this.state.category}</Text>
                         <Text style={styles.heading}>{this.state.title}</Text>
-                        {this.state.content}
+                        {this.formatContent()}
                     </View> 
+                    <AdmobBanner />
                 </ScrollView>
             </SafeAreaView>
         );
@@ -96,7 +99,8 @@ const styles = StyleSheet.create({
     paragraph: { 
         fontSize:theme.FONT_SIZE_REGULAR,
         lineHeight:theme.lineHeight,
-        color: theme.bodyText
+        color: theme.bodyText,
+        marginBottom:20
     }
 });
 export default StoryPage;

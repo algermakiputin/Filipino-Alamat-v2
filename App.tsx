@@ -32,7 +32,7 @@ import themeStyles from './app/styles/theme.styles';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator(); 
-// const Drawer = createDrawerNavigator();  
+// const Drawer = createDrawerNavigator();   
 
 const tabsOptions = (navigation:any) => ({
   headerTintColor:'#fff',

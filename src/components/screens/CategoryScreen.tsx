@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import StoriesList from '../ListViews/StoriesList';
 import themeStyles from '../../../app/styles/theme.styles';
-import { BannerAd, TestIds, BannerAdSize} from "@react-native-admob/admob";
+import { AdmobBanner } from '../Admob';
 
 class CategoryScreen extends React.Component<any,any> {
     
@@ -24,7 +24,7 @@ class CategoryScreen extends React.Component<any,any> {
             query: '',
             totalRecords: 0,
             page: 1,
-            totalPage: 1 
+            totalPage: 1
         }
         this.updateTotalRecords = this.updateTotalRecords.bind(this);
         this.updateTotalPage = this.updateTotalPage.bind(this); 
@@ -110,7 +110,7 @@ class CategoryScreen extends React.Component<any,any> {
                             { this.nextButton() }
                         </View>
                     </View>
-                    <BannerAd size={BannerAdSize.ADAPTIVE_BANNER} unitId={TestIds.BANNER} onAdFailedToLoad={() => console.log('error')} />
+                    <AdmobBanner />  
                 </ScrollView>    
             </SafeAreaView>
         );
