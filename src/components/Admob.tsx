@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { 
     BannerAd, 
     TestIds, 
-    BannerAdSize
+    BannerAdSize,
+    useInterstitialAd,
+    InterstitialAd
 } from "@react-native-admob/admob";
 
 export const AdmobBanner = () => {
@@ -10,4 +12,4 @@ export const AdmobBanner = () => {
                 size={BannerAdSize.ADAPTIVE_BANNER} 
                 unitId={TestIds.BANNER} 
                 />
-}
+} 

@@ -6,7 +6,8 @@ import {
     View, 
     TouchableOpacity,
     Image
-} from "react-native"; 
+} from "react-native";
+import { InterstitialAd, TestIds } from '@react-native-admob/admob'; 
 import theme from '../../../app/styles/theme.styles';
 import {
     get, 
@@ -16,6 +17,7 @@ import {
  
 class StoriesList extends React.Component<any, any> { 
 
+    interstitial:any = '';
     constructor(props:any) {
         super(props) 
         this.state = {
@@ -28,12 +30,13 @@ class StoriesList extends React.Component<any, any> {
             loading:true,
             query: '',
             totalRecords: 0,
-            clicks:0
+            clicks:1
         } 
     }   
 
     componentDidMount() { 
-        this.fetchStories();
+        this.fetchStories(); 
+        this.interstitial = InterstitialAd.createAd(TestIds.INTERSTITIAL);
     }
 
     async fetchStories(query = "", page = 1, categoryId = 0) { 
@@ -59,25 +62,27 @@ class StoriesList extends React.Component<any, any> {
             let excerpt = item.excerpt.rendered.replace(/<p>|<\/p>/g, '');
             const shortenExcerpt = excerpt.substring(0, 68) + '...';  
             const id = item.id;
+            const imageUrl = item._embedded.hasOwnProperty("wp:featuredmedia") ? item._embedded['wp:featuredmedia'][0].source_url : '';
             return <TouchableOpacity
                 key={key}
                 onPress={() => {  
-                    this.props.navigation.navigate('Story', {id: id})
+                    this.props.navigation.navigate('Story', {id: id});
+                    this.setState({clicks: this.state.clicks + 1});
+                    if (this.state.clicks % 4 === 0) {
+                        this.interstitial.show()
+                        this.interstitial = InterstitialAd.createAd(TestIds.INTERSTITIAL);
+                    }
                 }}
                 >
                 <View style={styles.listItem}>
                     <View style={styles.imageContainer}>
                         {
-                            item._embedded.hasOwnProperty("wp:featuredmedia") ? (
-                                item._embedded['wp:featuredmedia'][0].source_url ? (
-                                    <Image 
-                                        style={styles.image}
-                                        source={{uri: item._embedded['wp:featuredmedia'][0].source_url}}
-                                    />
-                                ) : null
-                                
+                            imageUrl ? (
+                                <Image 
+                                    style={styles.image}
+                                    source={{uri: item._embedded['wp:featuredmedia'][0].source_url}}
+                                />
                             ) : null
-                            
                         }
                     </View>
                     <View style={styles.descriptionContainer}>

@@ -11,39 +11,40 @@ import {
 import theme from '../../../app/styles/theme.styles';
 import { getById } from './../api/Alamat';
 import { AdmobBanner } from "../Admob";
- 
+import { InterstitialAd, TestIds } from "@react-native-admob/admob";
 
 class StoryPage extends React.Component<any, any> {
 
+    interstitial:Object = '';
     constructor(props:any) {
         super(props)
         this.state = {
             title: '',
             content: '',
             imageURL: '',
-            category: ''
+            category: '' 
         }
-        
     }
 
     formatContent() { 
         const divider = this.state.content.split("</p>");
         return divider.map((value:any, key:number) => {
-            const cleanString = value.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, '');
-            console.log(cleanString); 
+            const cleanString = value.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, ''); 
             return <Text key={key} style={styles.paragraph}>{cleanString.trim()}</Text>;
         });   
     }
 
     async componentDidMount() {
         const id = this.props.route.params.id;  
-        const story:any = await getById(id);   
+        const story:any = await getById(id); 
+        const imageUrl = story._embedded.hasOwnProperty('wp:featuredmedia') ? story._embedded['wp:featuredmedia'][0].source_url : '';
         this.setState({
             title: story.title.rendered,
             content: story.content.rendered,
-            imageURL: story._embedded['wp:featuredmedia'][0].source_url,
+            imageURL: imageUrl,
             category: story._embedded['wp:term'][0][0].name 
         }); 
+        this.interstitial = InterstitialAd.createAd(TestIds.INTERSTITIAL);
     }
 
     render() {
