@@ -31,16 +31,18 @@ function Category(props:any) {
         let category:Array<String> = [];
         let index:any = [];
         const categories = await getCategories();   
-        categories.forEach((item:any, key:number) => {   
-            if (key % 3 == 0 && key) {  
-                category.push(index); 
-                index = [];
-            }
-            index.push(item);
-            if (key == categories.length - 1 && index.length)
-                category.push(index);
-        });     
-        setData(category);
+        if (categories) {
+            categories.forEach((item:any, key:number) => {   
+                if (key % 3 == 0 && key) {  
+                    category.push(index); 
+                    index = [];
+                }
+                index.push(item);
+                if (key == categories.length - 1 && index.length)
+                    category.push(index);
+            });     
+            setData(category);
+        }
     }
 
     function displayCategories() { 

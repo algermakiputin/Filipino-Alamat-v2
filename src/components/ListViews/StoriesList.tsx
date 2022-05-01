@@ -53,7 +53,7 @@ class StoriesList extends React.Component<any, any> {
         if (this.props.updateRecords) {
             this.props.updateRecords(result.totalRecords);
             this.props.updateTotalPage(result.totalPages);
-        } 
+        }  
         this.setState({stories: result.data,loading:false});
     }
 
@@ -63,6 +63,8 @@ class StoriesList extends React.Component<any, any> {
             const shortenExcerpt = excerpt.substring(0, 68) + '...';  
             const id = item.id;
             const imageUrl = item._embedded.hasOwnProperty("wp:featuredmedia") ? item._embedded['wp:featuredmedia'][0].source_url : '';
+            const category = ''//item._embedded['wp:term'][0][0].name ?? null;
+             
             return <TouchableOpacity
                 key={key}
                 onPress={() => {  
@@ -88,7 +90,7 @@ class StoriesList extends React.Component<any, any> {
                     <View style={styles.descriptionContainer}>
                         <Text style={styles.listTitle}>{item.title.rendered}</Text>   
                         <Text style={styles.excerpt}>{shortenExcerpt}</Text>
-                        <Text style={styles.category}>Category: {item._embedded['wp:term'][0][0].name }</Text>
+                        <Text style={styles.category}>Category: { category }</Text>
                     </View>
                 </View>
             </TouchableOpacity>
