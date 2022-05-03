@@ -10,6 +10,7 @@ function scaleFontSize(fontSize) {
 }
 
 export default {
+    FONT_SIZE_EXTRA_SMALL:scaleFontSize(14),
     FONT_SIZE_SMALL:scaleFontSize(16),
     FONT_SIZE_REGULAR:scaleFontSize(20),
     FONT_SIZE_MEDIUM:scaleFontSize(22),

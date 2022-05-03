@@ -22,7 +22,8 @@ class StoryPage extends React.Component<any, any> {
             title: '',
             content: '',
             imageURL: '',
-            category: '' 
+            category: '',
+            loading: true
         }
     }
 
@@ -42,7 +43,8 @@ class StoryPage extends React.Component<any, any> {
             title: story.title.rendered,
             content: story.content.rendered,
             imageURL: imageUrl,
-            category: story._embedded['wp:term'][0][0].name 
+            category: story._embedded['wp:term'][0][0].name,
+            loading:false
         }); 
         this.interstitial = InterstitialAd.createAd(TestIds.INTERSTITIAL);
     }
@@ -51,22 +53,26 @@ class StoryPage extends React.Component<any, any> {
         return (
             <SafeAreaView>
                 <ScrollView>
-                    {
-                        this.state.imageURL ? (
-                            <Image 
-                                style={styles.image}
-                                source={{
-                                    uri: this.state.imageURL
-                                }}
-                            />
-                        ) : null
-                    } 
-                    <View style={styles.container}>  
-                        <Text style={styles.category}>Category: {this.state.category}</Text>
-                        <Text style={styles.heading}>{this.state.title}</Text>
-                        {this.formatContent()}
-                    </View> 
-                    <AdmobBanner />
+                    { this.state.loading ? <Text style={styles.container}>Loading...</Text> : (
+                        <View>
+                            {
+                                this.state.imageURL ? (
+                                    <Image 
+                                        style={styles.image}
+                                        source={{
+                                            uri: this.state.imageURL
+                                        }}
+                                    />
+                                ) : null
+                            } 
+                            <View style={styles.container}>  
+                                <Text style={styles.category}>Category: {this.state.category}</Text>
+                                <Text style={styles.heading}>{this.state.title}</Text>
+                                {this.formatContent()}
+                            </View> 
+                            <AdmobBanner />
+                        </View>
+                    )}
                 </ScrollView>
             </SafeAreaView>
         );

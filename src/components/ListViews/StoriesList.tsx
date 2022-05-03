@@ -60,10 +60,10 @@ class StoriesList extends React.Component<any, any> {
     displayStory() {  
         return this.state.stories.map((item:any, key:number) => {   
             let excerpt = item.excerpt.rendered.replace(/<p>|<\/p>/g, '');
-            const shortenExcerpt = excerpt.substring(0, 68) + '...';  
+            const shortenExcerpt = excerpt.substring(0, 55) + '...';  
             const id = item.id;
             const imageUrl = item._embedded.hasOwnProperty("wp:featuredmedia") ? item._embedded['wp:featuredmedia'][0].source_url : '';
-            const category = ''//item._embedded['wp:term'][0][0].name ?? null;
+            const category = item._embedded['wp:term'][0][0].name ?? null;
              
             return <TouchableOpacity
                 key={key}
@@ -124,7 +124,8 @@ const styles = StyleSheet.create({
     },
     category: {
         color:'rgba(0,0,0,0.5)', 
-        fontSize:theme.FONT_SIZE_SMALL
+        fontSize:theme.FONT_SIZE_EXTRA_SMALL,
+        marginTop:5
     },
     image: {
         width:'100%',
