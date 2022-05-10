@@ -105,11 +105,11 @@ class StoriesList extends React.Component<any, any> {
 
         return (
             <SafeAreaView style={styles.container}>
-                {this.state.loading ? <Text>Loading...</Text> : null}
+                {this.state.loading ? <Text style={styles.label}>Loading...</Text> : null}
                 {this.props.title? (<Text style={styles.heading}>{this.props.title}</Text>): null}
                 {
                     this.state.stories.error ? this.networkErrorMsg() : (
-                        this.state.stories.length ? this.displayStory() : <Text>No story found</Text>
+                        this.state.stories.length ? this.displayStory() : <Text style={styles.label}>No story found</Text>
                     )
                 }
             </SafeAreaView>
@@ -165,6 +165,10 @@ const styles = StyleSheet.create({
         color:theme.headingColor,
         fontFamily:'Poppings-ThinItalic',
         marginBottom:5
+    }, 
+    label: {
+        fontSize: theme.FONT_SIZE_MEDIUM,
+        color: theme.headingColor
     }
 })
 

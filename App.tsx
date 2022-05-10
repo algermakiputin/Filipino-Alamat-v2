@@ -186,8 +186,8 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   tabIcon: {
-    height:23,
-    width:23
+    height:26,
+    width:26
   }
 });
 

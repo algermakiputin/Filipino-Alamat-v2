@@ -2,8 +2,7 @@ import React from 'react';
 import {
     View,
     StyleSheet,
-    SafeAreaView,
-    Image,
+    SafeAreaView, 
     ScrollView,
     Text,
     TextInput,
@@ -92,7 +91,7 @@ class CategoryScreen extends React.Component<any,any> {
                                 <Text>Mga alamat tungkol sa {this.props.route.params.name}</Text>
                             )}
                         </Text>  
-                        <Text>Total Stories: {this.state.totalRecords}</Text>  
+                        <Text style={styles.label}>Total Stories: {this.state.totalRecords}</Text>  
                     </View> 
                     <StoriesList
                         ref={this.ref} 
@@ -136,7 +135,8 @@ const styles = StyleSheet.create({
         borderWidth:1,
         borderRadius:10,
         paddingLeft:15,
-        height:45
+        height:45,
+        color:themeStyles.headingColor
     },
     heading: {
         fontSize:themeStyles.FONT_SIZE_MEDIUM,
@@ -196,6 +196,10 @@ const styles = StyleSheet.create({
     btnText: {
         fontSize:themeStyles.FONT_SIZE_SMALL,
         color:'#ffffff'   
+    },
+    label: {
+        fontSize: themeStyles.FONT_SIZE_SMALL,
+        color: themeStyles.headingColor
     }
 });
 

@@ -62,7 +62,8 @@ const styles = StyleSheet.create({
         borderWidth:1,
         borderRadius:10,
         paddingLeft:15,
-        height:45
+        height:45,
+        color:themeStyles.headingColor
     },
     heading: {
         fontSize:themeStyles.FONT_SIZE_MEDIUM,

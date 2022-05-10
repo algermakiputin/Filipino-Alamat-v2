@@ -209,7 +209,8 @@ const styles = StyleSheet.create({
         minHeight:Dimensions.get('screen').height - 180
     },
     label: {
-        fontSize: themeStyles.FONT_SIZE_SMALL
+        fontSize: themeStyles.FONT_SIZE_SMALL,
+        color:themeStyles.headingColor
     },
     input: {
         backgroundColor:"#ffffff",
@@ -240,7 +241,7 @@ const styles = StyleSheet.create({
         marginLeft:'auto',
         backgroundColor:themeStyles.MAIN_COLOR,
         borderRadius:3,
-        marginBottom:20
+        marginBottom:20,
     },
     btnText: {
         color:"#fff",
@@ -248,10 +249,11 @@ const styles = StyleSheet.create({
         paddingTop:6,
         paddingBottom:6,
         paddingLeft:10,
-        paddingRight:10
+        paddingRight:10,
+        fontSize:themeStyles.FONT_SIZE_REGULAR
     },
     heading: {
-        fontSize: themeStyles.FONT_SIZE_LARGE,
+        fontSize: themeStyles.FONT_SIZE_EXTRA_LARGE,
         marginTop:10, 
         color:themeStyles.bodyText
     },

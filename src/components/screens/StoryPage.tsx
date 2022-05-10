@@ -53,7 +53,7 @@ class StoryPage extends React.Component<any, any> {
         return (
             <SafeAreaView>
                 <ScrollView>
-                    { this.state.loading ? <Text style={styles.container}>Loading...</Text> : (
+                    { this.state.loading ? <View style={styles.container}><Text style={styles.loading}>Loading...</Text></View> : (
                         <View>
                             {
                                 this.state.imageURL ? (
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
         paddingRight:20
     },
     heading: {
-        fontSize:theme.FONT_SIZE_LARGE,
+        fontSize:theme.FONT_SIZE_EXTRA_LARGE,
         marginBottom:15,
         color:theme.headingColor
     },
@@ -108,6 +108,10 @@ const styles = StyleSheet.create({
         lineHeight:theme.lineHeight,
         color: theme.bodyText,
         marginBottom:20
+    },
+    loading: {
+        fontSize: theme.FONT_SIZE_MEDIUM,
+        color: theme.headingColor
     }
 });
 export default StoryPage;
