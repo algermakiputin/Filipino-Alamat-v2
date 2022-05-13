@@ -54,6 +54,7 @@ class StoriesList extends React.Component<any, any> {
             this.props.updateRecords(result.totalRecords);
             this.props.updateTotalPage(result.totalPages);
         }  
+        console.log(result.data)
         this.setState({stories: result.data,loading:false});
     }
 

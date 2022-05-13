@@ -33,13 +33,16 @@ function Category(props:any) {
         const categories = await getCategories();   
         if (categories) {
             categories.forEach((item:any, key:number) => {   
-                if (key % 3 == 0 && key) {  
-                    category.push(index); 
-                    index = [];
+                if (item.name != "recommended") {
+                    if (key % 3 == 0 && key) {  
+                        category.push(index); 
+                        index = [];
+                    }
+                    index.push(item);
+                    if (key == categories.length - 1 && index.length)
+                        category.push(index);
                 }
-                index.push(item);
-                if (key == categories.length - 1 && index.length)
-                    category.push(index);
+                
             });     
             setData(category);
         }
