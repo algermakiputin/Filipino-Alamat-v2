@@ -73,7 +73,7 @@ class StoriesList extends React.Component<any, any> {
                     this.setState({clicks: this.state.clicks + 1});
                     if (this.state.clicks % 4 === 0) {
                         this.interstitial.show()
-                        this.interstitial = InterstitialAd.createAd(TestIds.INTERSTITIAL);
+                        this.interstitial = InterstitialAd.createAd('ca-app-pub-4118987136087583/7614768508');
                     }
                 }}
                 >

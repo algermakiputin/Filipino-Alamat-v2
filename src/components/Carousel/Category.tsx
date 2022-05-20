@@ -125,6 +125,7 @@ function Category(props:any) {
                 }}
                 scrollEventThrottle={1} 
                 showsHorizontalScrollIndicator={false}
+                style={{marginBottom:10}}
             >  
                 {displayCategories()}
             </ScrollView>

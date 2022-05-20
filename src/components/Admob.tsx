@@ -1,15 +1,12 @@
 import React, { useState } from "react";
 import { 
-    BannerAd, 
-    TestIds, 
-    BannerAdSize,
-    useInterstitialAd,
-    InterstitialAd
+    BannerAd,  
+    BannerAdSize, 
 } from "@react-native-admob/admob";
 
 export const AdmobBanner = () => {
     return <BannerAd 
                 size={BannerAdSize.ADAPTIVE_BANNER} 
-                unitId={TestIds.BANNER} 
+                unitId='ca-app-pub-4118987136087583/3996860227' 
                 />
 } 
