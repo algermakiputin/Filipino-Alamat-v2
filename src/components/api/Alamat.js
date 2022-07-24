@@ -7,7 +7,6 @@ const errorStatus = {
 };
 
 export const get = async (query = '') => {
-    console.log(HOST_NAME);
     let response = [];
     await axios.get(HOST_NAME + '/wp-json/wp/v2/alamat_posts?_embed&search=' + query)
         .then(res => {  

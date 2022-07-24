@@ -8,7 +8,7 @@
  * @format
  */
 import 'react-native-gesture-handler';
-import React from 'react';
+import React, { useRef } from 'react';
 import {
   SafeAreaView, 
   StyleSheet,
@@ -28,11 +28,10 @@ import CategoryScreen from './src/components/screens/CategoryScreen';
 import SearchScreen from './src/components/screens/SearchScreen'; 
 import StoryPage from './src/components/screens/StoryPage';
 import themeStyles from './app/styles/theme.styles';
-// import { createDrawerNavigator } from '@react-navigation/drawer'; 
+import Flags from './src/components/Modal/Flags';
 
 const Stack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator(); 
-// const Drawer = createDrawerNavigator();   
+const Tab = createBottomTabNavigator();  
 
 const tabsOptions = (navigation:any) => ({
   headerTintColor:'#fff',
@@ -91,6 +90,7 @@ const stackPageOptions = {
 
 const App = () => {
 
+  const flagModal = useRef<Flags | null>(null);
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -99,8 +99,8 @@ const App = () => {
         <Stack.Screen 
           name='HomeTabs'
           component={HomeTabs}
-          options={({navigation}) => ({ 
-            title:'Filipino Alamat V2',
+          options={({navigation}) => ({  
+            title: 'Ang Alamat',
             headerStyle: {
               backgroundColor:"#52A0FE",
             },
@@ -142,7 +142,7 @@ const App = () => {
         <Stack.Screen 
           name='Story'
           component={StoryPage}
-          options={{ 
+          options={({navigation, route}) => ({ 
             title:"Kwento",
             headerStyle: {
               backgroundColor:"#f0f7fe", 
@@ -152,8 +152,19 @@ const App = () => {
             headerShadowVisible:false,
             contentStyle: {
               backgroundColor:"#f0f7fe"
+            },
+            headerRight:(s) => {
+              console.log(route);
+              console.log(navigation.getState.getCurrentState);
+              return <TouchableOpacity
+                onPress={() => {
+                  flagModal.current?.modalHandler();
+                }}>
+                  <Flags ref={flagModal}/>
+                  <Text>Report/Flag</Text>
+              </TouchableOpacity>
             }
-          }}
+          })}
         />
       </Stack.Navigator>
     </NavigationContainer>

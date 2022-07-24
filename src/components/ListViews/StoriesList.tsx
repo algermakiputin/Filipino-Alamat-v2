@@ -62,14 +62,14 @@ class StoriesList extends React.Component<any, any> {
         return this.state.stories.map((item:any, key:number) => {   
             let excerpt = item.excerpt.rendered.replace(/<p>|<\/p>/g, '');
             const shortenExcerpt = excerpt.substring(0, 55) + '...';  
-            const id = item.id;
+            const id = item.id; 
             const imageUrl = item._embedded.hasOwnProperty("wp:featuredmedia") ? item._embedded['wp:featuredmedia'][0].source_url : '';
             const category = item._embedded['wp:term'][0][0].name ?? null;
              
             return <TouchableOpacity
                 key={key}
                 onPress={() => {  
-                    this.props.navigation.navigate('Story', {id: id});
+                    this.props.navigation.navigate('Story', { id: id, title: item.title.rendered });
                     this.setState({clicks: this.state.clicks + 1});
                     if (this.state.clicks % 4 === 0) {
                         this.interstitial.show()
