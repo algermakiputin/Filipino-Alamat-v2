@@ -8,7 +8,7 @@
  * @format
  */
 import 'react-native-gesture-handler';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   SafeAreaView, 
   StyleSheet,
@@ -29,6 +29,7 @@ import SearchScreen from './src/components/screens/SearchScreen';
 import StoryPage from './src/components/screens/StoryPage';
 import themeStyles from './app/styles/theme.styles';
 import Flags from './src/components/Modal/Flags';
+import { getToken } from './src/components/api/Alamat';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();  
@@ -91,6 +92,18 @@ const stackPageOptions = {
 const App = () => {
 
   const flagModal = useRef<Flags | null>(null);
+  const [ token, setToken ] = useState('');
+
+  useEffect(() => {
+    const fetchToken = async() => {
+      return await getToken().then((result) => {
+        setToken(result.data.token);
+      }).catch(() => console.log('Error fetching token')); 
+    }  
+    
+    fetchToken(); 
+  }, []);
+
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -153,14 +166,16 @@ const App = () => {
             contentStyle: {
               backgroundColor:"#f0f7fe"
             },
-            headerRight:(s) => {
-              console.log(route);
-              console.log(navigation.getState.getCurrentState);
+            headerRight:() => {   
               return <TouchableOpacity
-                onPress={() => {
+                onPress={async() => {
                   flagModal.current?.modalHandler();
                 }}>
-                  <Flags ref={flagModal}/>
+                  <Flags 
+                    ref={flagModal}
+                    token={token} 
+                    title={route?.params?.title}
+                    />
                   <Text>Report/Flag</Text>
               </TouchableOpacity>
             }
