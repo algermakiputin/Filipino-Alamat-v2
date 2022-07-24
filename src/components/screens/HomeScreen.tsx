@@ -12,7 +12,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import theme from "../../../app/styles/theme.styles";  
 import Category from "../Carousel/Category";
 
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator(); 
 
 class HomeScreen extends React.Component<any, any> {
 

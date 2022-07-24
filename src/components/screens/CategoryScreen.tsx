@@ -2,14 +2,15 @@ import React from 'react';
 import {
     View,
     StyleSheet,
-    SafeAreaView,
-    Image,
+    SafeAreaView, 
     ScrollView,
     Text,
-    TextInput
+    TextInput,
+    TouchableOpacity
 } from 'react-native';
 import StoriesList from '../ListViews/StoriesList';
 import themeStyles from '../../../app/styles/theme.styles';
+import { AdmobBanner } from '../Admob';
 
 class CategoryScreen extends React.Component<any,any> {
     
@@ -19,38 +20,97 @@ class CategoryScreen extends React.Component<any,any> {
         super(props)  
         this.ref = React.createRef();
         this.state = {
-            query: ''
+            query: '',
+            totalRecords: 0,
+            page: 1,
+            totalPage: 1
         }
+        this.updateTotalRecords = this.updateTotalRecords.bind(this);
+        this.updateTotalPage = this.updateTotalPage.bind(this); 
+    }
+
+    updateTotalRecords(total:number) {
+        this.setState({totalRecords: total});
+    } 
+
+    updateTotalPage(total: number) {
+        this.setState({totalPage: total});
+    }
+
+    nextButton() {
+        return (
+            <TouchableOpacity
+                disabled={ this.state.page >= this.state.totalPage}
+                style={this.state.page >= this.state.totalPage ? styles.btnDisabled : styles.btn}
+                onPress={() => this.turnPage('next')}>
+                <Text style={styles.btnText}>Next</Text>
+            </TouchableOpacity>
+        )
+    }
+
+    prevButton() {
+        return (
+            <TouchableOpacity
+                disabled={this.state.page === 1}
+                style={this.state.page === 1 ? styles.btnDisabled : styles.btn}
+                onPress={() => this.turnPage('prev')}>
+                <Text style={styles.btnText}>Prev</Text>
+            </TouchableOpacity>
+        )
+    }
+
+    turnPage(action:String) {
+        let page = 0;
+        if (action === "next") {
+            page = this.state.page + 1;
+            this.setState({page: page});
+        }else if (action === "prev") {
+            page = this.state.page - 1;
+            this.setState({page: page}); 
+        } 
+       
+        this.ref.current.fetchStories('', page, this.props.route.params.id);
     }
 
     render() {
         return (
             <SafeAreaView>
-                <View style={styles.container}> 
-                    <TextInput 
-                        style={styles.searchbox}
-                        placeholder="Search..."
-                        placeholderTextColor={"#333"} 
-                        onChangeText={(text) => {
-                            this.setState({query:text})
-                            this.ref.current.fetchStories(text);
-                        }}
-                    />
-                    <Text style={styles.heading}>
-                        { this.state.query ? <Text>Search Result for: "{this.state.query}"</Text> : (
-                            <Text>Mga alamat tungkol sa {this.props.route.params.name}</Text>
-                        )} 
-                    </Text>    
-                </View>
                 <ScrollView>
+                    <View style={styles.container}> 
+                        <TextInput 
+                            style={styles.searchbox}
+                            placeholder="Search..."
+                            placeholderTextColor={"#333"} 
+                            onChangeText={(text) => {
+                                this.setState({query:text})
+                                this.ref.current.fetchStories(text);
+                            }}
+                        />
+                        <Text style={styles.heading}>
+                            { this.state.query ? <Text>Search Result for: "{this.state.query}"</Text> : (
+                                <Text>Mga alamat tungkol sa {this.props.route.params.name}</Text>
+                            )}
+                        </Text>  
+                        <Text style={styles.label}>Total Stories: {this.state.totalRecords}</Text>  
+                    </View> 
                     <StoriesList
                         ref={this.ref} 
                         title='' 
                         navigation={this.props.navigation} 
                         category={this.props.route.params.id}
                         query={this.state.query} 
+                        updateRecords={this.updateTotalRecords}
+                        updateTotalPage={this.updateTotalPage}
                         />
-                </ScrollView> 
+                    <View style={styles.btnsContainer}>
+                        <View style={styles.btnWrapper}>
+                            <Text>Page: {this.state.page} / {this.state.totalPage}</Text>
+                            { this.prevButton() }
+                            { this.nextButton() }
+                        </View>
+                    </View>
+                    <AdmobBanner />  
+                </ScrollView>    
             </SafeAreaView>
         );
     }
@@ -75,7 +135,8 @@ const styles = StyleSheet.create({
         borderWidth:1,
         borderRadius:10,
         paddingLeft:15,
-        height:45
+        height:45,
+        color:themeStyles.headingColor
     },
     heading: {
         fontSize:themeStyles.FONT_SIZE_MEDIUM,
@@ -98,8 +159,47 @@ const styles = StyleSheet.create({
         fontSize: themeStyles.FONT_SIZE_LARGE,
         fontWeight:'bold',
         textAlign:'center',
-        paddingTop:20,
-    
+        paddingTop:20, 
+    },
+    btnsContainer: {
+        paddingLeft:15,
+        paddingRight:15,
+        marginBottom:20
+    },
+    btnWrapper: { 
+        display:'flex', 
+        flexDirection:'row',
+        marginLeft:'auto', 
+        alignItems:'center'
+    },
+    btn: {
+        width:'auto', 
+        backgroundColor: themeStyles.MAIN_COLOR,
+        marginRight:5,
+        marginLeft:5,
+        padding:6,
+        paddingRight:12,
+        paddingLeft:12,
+        borderRadius:1
+    },
+    btnDisabled: {
+        width:'auto', 
+        backgroundColor: themeStyles.MAIN_COLOR,
+        marginRight:5,
+        marginLeft:5,
+        padding:6,
+        paddingRight:12,
+        paddingLeft:12,
+        borderRadius:1,
+        opacity:0.75
+    },
+    btnText: {
+        fontSize:themeStyles.FONT_SIZE_SMALL,
+        color:'#ffffff'   
+    },
+    label: {
+        fontSize: themeStyles.FONT_SIZE_SMALL,
+        color: themeStyles.headingColor
     }
 });
 
