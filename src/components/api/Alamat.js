@@ -1,5 +1,5 @@
 import axios from "axios";
-import {HOST_NAME} from '@env'; 
+import { HOST_NAME, USERNAME, PASSWORD } from '@env'; 
 
 const errorStatus = {
     error: true,
@@ -80,9 +80,9 @@ export const getCategories = async () => {
     return data;
 }
 
-export const search = (query) => {
+export const search = async(query) => {
     let response = [];
-    axios.get(HOST_NAME + '/wp-json/wp/v2/?search=' + query)
+    await axios.get(HOST_NAME + '/wp-json/wp/v2/?search=' + query)
         .then(res => {
             response = res;
         })
@@ -94,4 +94,29 @@ export const search = (query) => {
         totalRecords:  response.headers['x-wp-total'],
         totalPages: response.headers['x-wp-totalpages']
     };
+}
+
+export const getToken = async() => { 
+    return await axios.post(HOST_NAME + '/wp-json/jwt-auth/v1/token', {
+            username: USERNAME,
+            password: PASSWORD
+        })
+        .then(res => { 
+            return res;
+        })
+        .catch((error) => {
+            return error;
+        }) 
+
+}
+
+export const submitFlag = async(title, flag, token) => {
+    return await axios.post(HOST_NAME + '/wp-json/wp/v2/flags', { title: title, content: flag },
+        {  headers: { Authorization: `Bearer ${token}`}}
+    ).then(res => { 
+        return res;
+    })
+    .catch((error) => {
+        return error;
+    })
 }

@@ -103,10 +103,7 @@ function Category(props:any) {
                 ref={scrollViewRef}
                 horizontal={true}
                 scrollEnabled
-                pagingEnabled={true}  
-                onMomentumScrollEnd={() => {
-                    console.log("animation ended");
-                }}
+                pagingEnabled={true}   
                 onScroll={(event) => {
                     let currentIndex = Math.round(event.nativeEvent.contentOffset.x / windowWidth);  
                     //console.log("current index:" + currentIndex); 
