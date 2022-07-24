@@ -95,16 +95,12 @@ class StoriesList extends React.Component<any, any> {
                     </View>
                 </View>
             </TouchableOpacity>
-        }); 
-    }
-
-    networkErrorMsg() {
-        return <Text>{this.state.stories.message}</Text>
-    }
+        ) 
+    } 
 
     render() {
 
-        return (
+        return ( 
             <SafeAreaView style={styles.container}>
                 {this.state.loading ? <Text style={styles.label}>Loading...</Text> : null}
                 {this.props.title? (<Text style={styles.heading}>{this.props.title}</Text>): null}
@@ -113,7 +109,7 @@ class StoriesList extends React.Component<any, any> {
                         this.state.stories.length ? this.displayStory() : <Text style={styles.label}>No story found</Text>
                     )
                 }
-            </SafeAreaView>
+            </SafeAreaView> 
         );
     }
 }
