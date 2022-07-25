@@ -15,14 +15,13 @@ import themeStyles from "../../../app/styles/theme.styles";
 import {USERNAME, PASSWORD, HOST_NAME} from '@env';
 
 interface IState {
-    name: String,
-    title: String,
-    category: String,
-    content: String,
-    errors: Array<String>,
-    wordCount: Number,
-    success:Boolean,
-    loading:Boolean
+    name: string,
+    email: string,
+    subject: string,
+    message: string,
+    errors: Array<string>, 
+    success:boolean,
+    loading:boolean
 }
 
 class SubmitStoryForm extends React.Component<any, IState> {
@@ -30,11 +29,10 @@ class SubmitStoryForm extends React.Component<any, IState> {
     private storage = AsyncStorage;
     private initialState = {
         name:'',
-        title: '',
-        category: '',
-        content: '',
-        errors: [],
-        wordCount: 0,
+        email: '',
+        subject: '',
+        message: '',
+        errors: [], 
         success: false,
         loading: false
     }
@@ -51,33 +49,29 @@ class SubmitStoryForm extends React.Component<any, IState> {
     }  
 
     validateFields() {
-        let errorrs = [];
-        if (this.state.category === '')
-            errorrs.push('Category is required');
-        if (this.state.content === '')
-            errorrs.push('Content is required');
-        if (this.state.title === '')
-            errorrs.push('Title is required');
-        if (this.state.wordCount < 100) 
-            errorrs.push('Story content must be at least 100 words');
-
+        let errors = [];
+        if (this.state.name === '')
+            errors.push('Name is required');
+        if (this.state.email === '')
+            errors.push('Email is required');
+        if (this.state.subject === '')
+            errors.push('Subject is required');
+        if (this.state.message === '') 
+            errors.push('Message is required');
+        if (this.state.email !== '' && !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(this.state.email)) {
+            errors.push('Invalid email');
+        }
         this.scrollToTop();
-        this.setState({errors: errorrs});
-        return errorrs;
+        this.setState({errors: errors});
+        return errors;
     }
-
-    countWords() {
-        let wordCount = this.state.content.split(' ').length;
-        this.setState({wordCount: wordCount});
-    }   
 
     async submitHandler() {
         let token: String | null = ''; 
         const error = this.validateFields();  
 
         if (!error.length) { 
-            this.setState({loading:true})
-            await this.getToken();   
+            this.setState({loading:true}) 
             this.storage.getItem('token').then((res) => this.storeStory(res));  
         }
     } 
@@ -88,8 +82,8 @@ class SubmitStoryForm extends React.Component<any, IState> {
 
     storeStory(token: String | null) { 
         axios.post(HOST_NAME + 'wp-json/wp/v2/alamat_posts', {
-                    'title': this.state.title,
-                    'content': this.state.content + '\n' + 'Category: ' + this.state.category + '\n' + 'Author: ' + this.state.name
+                    'title': this.state.subject,
+                    'content': this.state.message + '\n' + 'Name: ' + this.state.name + '\n' + 'Email: ' + this.state.email
                 }, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -107,18 +101,6 @@ class SubmitStoryForm extends React.Component<any, IState> {
             .catch(err => console.log(err)) 
     }
 
-    getToken() {  
-        const url = 'http://192.168.1.6:8888/filipinoalamat//wp-json/jwt-auth/v1/token'
-        axios.post(url, {
-                username: USERNAME,
-                password: PASSWORD
-            })
-            .then(async res => {
-                await this.storage.setItem('token', res.data.token); 
-            })
-            .catch(err => console.log("error: " +err));
-    }
-
     displayErrors() {
         return this.state.errors.map((item, key) => {
             return <Text key={key} style={styles.textDanger}>{item}</Text>
@@ -127,7 +109,7 @@ class SubmitStoryForm extends React.Component<any, IState> {
 
     displaySuccess() { 
         setTimeout(() => this.setState({success: false}), 5000)
-        return <Text style={{color:'green'}}>Story submitted successfully</Text>
+        return <Text style={{color:'green'}}>Message sent successfully</Text>
     }
     
     render() {
@@ -137,51 +119,50 @@ class SubmitStoryForm extends React.Component<any, IState> {
                     ref={this.scroll}
                     style={styles.container}>
                     <View style={styles.wrapper}>
-                    <Text style={styles.heading}>Submit your story and let a thousand read</Text>
+                    <Text style={styles.heading}>Contact Us</Text>
                     <View style={styles.formGroup}>
                         { this.state.errors.length ? this.displayErrors() : null }
                         { this.state.success ? this.displaySuccess() : null } 
                     </View>
                     <View style={styles.formGroup}>
-                        <Text style={styles.label}>Your Name</Text>
+                        <Text style={styles.label}>Name</Text>
                         <TextInput 
-                            ref={this.name}
-                            placeholder="Ex: Juan Dela Cruz" 
+                            ref={this.name} 
+                            placeholder="Your name"
                             style={styles.input} 
                             editable={true}
                             onChangeText={(text) => this.setState({name: text})}
                             />
                     </View>
                     <View style={styles.formGroup}>
-                        <Text style={styles.label}>Title</Text>
+                        <Text style={styles.label}>E-Mail</Text>
                         <TextInput 
-                            ref={this.title}
-                            placeholder="Ex: Alamat ng Pinya" 
+                            ref={this.title} 
+                            placeholder="Your email address"
                             style={styles.input} 
                             editable={true}
-                            onChangeText={(text) => this.setState({title: text})}
+                            onChangeText={(text) => this.setState({email: text})}
                             />
                     </View>
                     <View style={styles.formGroup}>
-                        <Text style={styles.label}>Category</Text>
+                        <Text style={styles.label}>Subject</Text>
                         <TextInput 
-                            ref={this.category}
-                            placeholder="Ex: Prutas" 
+                            ref={this.category} 
+                            placeholder="Subject"
                             style={styles.input}
-                            onChangeText={(text) => this.setState({category: text})}
+                            onChangeText={(text) => this.setState({subject: text})}
                             />
                     </View>
                     <View style={styles.formGroup}>
-                        <Text style={styles.label}>Story Content (Min of 100 words) Word count: {this.state.wordCount.toString()}</Text>
+                        <Text style={styles.label}>Message</Text>
                         <TextInput 
                             ref={this.content}
-                            placeholder="Ex: Noong unang panahon, panahon pa ng hapon..." 
+                            placeholder="Your message" 
                             multiline={true}
                             numberOfLines={8}
                             style={styles.textArea}
-                            onChangeText={(text) => {
-                                this.countWords();
-                                this.setState({content: text});
+                            onChangeText={(text) => { 
+                                this.setState({message: text});
                             }}
                             />
                     </View> 
@@ -189,7 +170,7 @@ class SubmitStoryForm extends React.Component<any, IState> {
                         <TouchableOpacity 
                             onPress={() => this.submitHandler()}
                             style={styles.btn}>
-                            <Text style={styles.btnText}>Submit</Text>
+                            <Text style={styles.btnText}>Send Message</Text>
                         </TouchableOpacity>
                     </View>
                     </View>
@@ -236,12 +217,13 @@ const styles = StyleSheet.create({
         paddingLeft:15,
         color:themeStyles.bodyText
     },
-    btn: {
-        width:100,
+    btn: { 
         marginLeft:'auto',
         backgroundColor:themeStyles.MAIN_COLOR,
         borderRadius:3,
         marginBottom:20,
+        paddingLeft:10,
+        paddingRight:10
     },
     btnText: {
         color:"#fff",
@@ -250,7 +232,7 @@ const styles = StyleSheet.create({
         paddingBottom:6,
         paddingLeft:10,
         paddingRight:10,
-        fontSize:themeStyles.FONT_SIZE_REGULAR
+        fontSize:themeStyles.FONT_SIZE_REGULAR, 
     },
     heading: {
         fontSize: themeStyles.FONT_SIZE_EXTRA_LARGE,
