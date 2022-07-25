@@ -2,26 +2,34 @@ import React from "react";
 import { Modal, View, Text, TouchableHighlight, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import themeStyles from "../../../app/styles/theme.styles";  
 import { submitFlag } from '../api/Alamat'; 
+import AsyncStorage from "@react-native-community/async-storage";
 
 class Flags extends React.Component<any,any> {
 
     constructor(props: any) {
         super(props);
         this.state = {
-            visible: false
+            visible: false,
+            token: '',
         }
+    }
+
+    componentDidMount() { 
+        AsyncStorage.getItem('token').then((token) => {
+            this.setState({token: token});
+        });
     }
 
     modalHandler() {
         this.setState({visible: !this.state.visible});
     } 
 
-    submitHandler(flag: string) {
+    submitHandler(flag: string) { 
         Alert.alert('Flag Post', 'Are you sure you want to flag this content?', [
             {
                 text: 'Confirm',
                 onPress: async() => {
-                    await submitFlag(this.props.title, flag, this.props.token).then((res) => { 
+                    await submitFlag(this.props.title, flag, this.state.token).then((res) => { 
                         this.modalHandler();
                     }).catch(err => console.log(err));
                 }

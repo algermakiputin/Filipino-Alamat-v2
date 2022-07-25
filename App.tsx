@@ -30,6 +30,7 @@ import StoryPage from './src/components/screens/StoryPage';
 import themeStyles from './app/styles/theme.styles';
 import Flags from './src/components/Modal/Flags';
 import { getToken } from './src/components/api/Alamat';
+import AsyncStorage from "@react-native-community/async-storage";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();  
@@ -58,7 +59,7 @@ const TabScreenOptions = (route:any) => ({
   tabBarShowLabel:false,  
 });
 
-function HomeTabs() {
+function HomeTabs(token: string) {
 
   return (
     <Tab.Navigator  
@@ -96,8 +97,8 @@ const App = () => {
 
   useEffect(() => {
     const fetchToken = async() => {
-      return await getToken().then((result) => {
-        setToken(result.data.token);
+      await getToken().then(async(result) => {
+        await AsyncStorage.setItem('token', result.data.token);
       }).catch(() => console.log('Error fetching token')); 
     }  
     
@@ -172,8 +173,7 @@ const App = () => {
                   flagModal.current?.modalHandler();
                 }}>
                   <Flags 
-                    ref={flagModal}
-                    token={token} 
+                    ref={flagModal} 
                     title={route?.params?.title}
                     />
                   <Text>Report/Flag</Text>
