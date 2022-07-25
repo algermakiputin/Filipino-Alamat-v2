@@ -81,7 +81,7 @@ class SubmitStoryForm extends React.Component<any, IState> {
     }
 
     storeStory(token: String | null) { 
-        axios.post(HOST_NAME + 'wp-json/wp/v2/alamat_posts', {
+        axios.post(HOST_NAME + 'wp-json/wp/v2/posts', {
                     'title': this.state.subject,
                     'content': this.state.message + '\n' + 'Name: ' + this.state.name + '\n' + 'Email: ' + this.state.email
                 }, {
