@@ -14,7 +14,8 @@ import {
     getAlamatByCategory,
     getRecommendations
 } from '../api/Alamat'; 
- 
+import { httpToHttps } from '../helper/helper'; 
+
 class StoriesList extends React.Component<any, any> { 
 
     interstitial:any = '';
@@ -85,7 +86,7 @@ class StoriesList extends React.Component<any, any> {
                             imageUrl ? (
                                 <Image 
                                     style={styles.image}
-                                    source={{uri: item._embedded['wp:featuredmedia'][0].source_url}}
+                                    source={{uri: httpToHttps(item._embedded['wp:featuredmedia'][0].source_url)}}
                                 />
                             ) : null
                         }

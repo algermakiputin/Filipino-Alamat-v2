@@ -12,6 +12,7 @@ import theme from '../../../app/styles/theme.styles';
 import { getById } from './../api/Alamat';
 import { AdmobBanner } from "../Admob";
 import { InterstitialAd, TestIds } from "@react-native-admob/admob";
+import { httpToHttps } from "../helper/helper";
 
 class StoryPage extends React.Component<any, any> {
 
@@ -42,7 +43,7 @@ class StoryPage extends React.Component<any, any> {
         this.setState({
             title: story.title.rendered,
             content: story.content.rendered,
-            imageURL: imageUrl,
+            imageURL: httpToHttps(imageUrl),
             category: story._embedded['wp:term'][0][0].name,
             loading:false
         }); 
