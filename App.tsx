@@ -14,10 +14,8 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  Image,
-  View,
-  TouchableOpacity,
-  Alert
+  Image, 
+  TouchableOpacity, 
 } from 'react-native';  
 import HomeScreen from './src/components/screens/HomeScreen';
 import { NavigationContainer, useRoute } from '@react-navigation/native';

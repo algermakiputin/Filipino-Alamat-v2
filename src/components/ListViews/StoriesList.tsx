@@ -1,4 +1,4 @@
-import React, {useRef} from "react";
+import React from "react";
 import { 
     SafeAreaView,
     Text,
@@ -7,7 +7,7 @@ import {
     TouchableOpacity,
     Image
 } from "react-native";
-import { InterstitialAd, TestIds } from '@react-native-admob/admob'; 
+import { InterstitialAd } from '@react-native-admob/admob'; 
 import theme from '../../../app/styles/theme.styles';
 import {
     get, 
@@ -15,6 +15,8 @@ import {
     getRecommendations
 } from '../api/Alamat'; 
 import { httpToHttps } from '../helper/helper'; 
+
+const INTERSTITIAL_ID = 'ca-app-pub-4118987136087583/7614768508';  
 
 class StoriesList extends React.Component<any, any> { 
 
@@ -37,7 +39,8 @@ class StoriesList extends React.Component<any, any> {
 
     componentDidMount() { 
         this.fetchStories(); 
-        this.interstitial = InterstitialAd.createAd(TestIds.INTERSTITIAL);
+        this.interstitial = InterstitialAd.createAd(INTERSTITIAL_ID);
+        console.log(INTERSTITIAL_ID);
     }
 
     async fetchStories(query = "", page = 1, categoryId = 0) { 
@@ -76,7 +79,7 @@ class StoriesList extends React.Component<any, any> {
                     this.setState({clicks: this.state.clicks + 1});
                     if (this.state.clicks % 4 === 0) {
                         this.interstitial.show()
-                        this.interstitial = InterstitialAd.createAd('ca-app-pub-4118987136087583/7614768508');
+                        this.interstitial = InterstitialAd.createAd(INTERSTITIAL_ID);
                     }
                 }}
                 >
