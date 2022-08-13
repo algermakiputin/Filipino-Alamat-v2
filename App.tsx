@@ -37,12 +37,12 @@ const tabsOptions = (navigation:any) => ({
   headerTintColor:'#fff',
   tabBarLabel:"Home",
   tabBarStyle: {
-    backgroundColor:"#52A0FE"
+    backgroundColor:"#52A0FE",
   },
   headerStyle: {
     backgroundColor:"#52A0FE"
   },
-  headerShown:false
+  headerShown:false,
 });
 
 const TabScreenOptions = (route:any) => ({
@@ -116,6 +116,7 @@ const App = () => {
             headerStyle: {
               backgroundColor:"#52A0FE",
             },
+            
             headerTintColor:"#ffffff", 
             headerRight: () => { 
               return(
