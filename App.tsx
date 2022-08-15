@@ -175,7 +175,10 @@ const App = () => {
                     ref={flagModal} 
                     title={route?.params?.title}
                     />
-                  <Text>Report/Flag</Text>
+                  <Image 
+                    style={{width:20,height:20}}
+                    source={require('./src/assets/images/report.png')}
+                  />
               </TouchableOpacity>
             }
           })}
