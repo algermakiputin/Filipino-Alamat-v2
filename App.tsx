@@ -112,11 +112,10 @@ const App = () => {
           name='HomeTabs'
           component={HomeTabs}
           options={({navigation}) => ({  
-            title: 'Ang Alamat',
+            title: 'Filipino Alamat',
             headerStyle: {
               backgroundColor:"#52A0FE",
-            },
-            
+            }, 
             headerTintColor:"#ffffff", 
             headerRight: () => { 
               return(
@@ -173,7 +172,7 @@ const App = () => {
                 }}>
                   <Flags 
                     ref={flagModal} 
-                    title={route?.params?.title}
+                    title={route.params?.title}
                     />
                   <Image 
                     style={{width:20,height:20}}
