@@ -7,7 +7,8 @@ import {
     TouchableOpacity,
     Image,
     ScrollView,
-    Button
+    Button, 
+    Dimensions
 } from "react-native"; 
 import theme from '../../../app/styles/theme.styles';
 import { getById } from './../api/Alamat';
@@ -16,11 +17,18 @@ import { InterstitialAd, TestIds } from "@react-native-admob/admob";
 import { httpToHttps } from "../helper/helper";
 import Tts from 'react-native-tts'; 
 
+const stopButton = require('../../assets/images/stop.png');
+const playButton = require('../../assets/images/play-button.png');
+
 class StoryPage extends React.Component<any, any> {
 
     interstitial:Object = '';
     _isMounted = false;
-
+    textToSpeach = Tts;
+    textRefs: any = []; 
+    scrollViewRef: any = React.createRef();
+    height = Dimensions.get('window').height;
+     
     constructor(props:any) {
         super(props)
         this.state = {
@@ -32,9 +40,16 @@ class StoryPage extends React.Component<any, any> {
             totalSeconds: 0,
             speaking: false,
             strippedContent: '',
-            interval: null
-        } 
-       
+            interval: null,
+            read: 0,
+            line: 0,
+            words: [],
+            count: 0,
+            index: 0,
+            userScrolling: false,
+            isTitle: true,
+            offsetY: 0
+        }   
     }
 
     formatText(text: string) {
@@ -43,24 +58,43 @@ class StoryPage extends React.Component<any, any> {
         return splitByParagraph;
     }
 
-    formatContent() {  
-        return this.state.content.map((value:any, key:number) => { 
-            return <Text key={key} style={styles.paragraph}>{value}</Text>;
-        });   
+    splitByText(text: any, count: number) {   
+        return text.split(" ").map((text: string, index: number) => {   
+            const word = {
+                text: <Text ref={(el) => (this.textRefs[count][index].current = el)} key={this.state.count} style={{alignSelf: 'flex-start'}}>{text} </Text>, 
+                count: this.state.count, 
+            };
+            this.setState({count: this.state.count + 1});
+            return word;
+        }); 
     }
 
-    async componentDidMount() {
-        this._isMounted = true;  
-        
-        if (this._isMounted) {
+    formatContent() {  
+        return this.state.words.map((text:any, index:number) => {    
+            return (<Text style={styles.text} key={index}>
+                {text.map((value:any) => {
+                return value.text;
+            })}
+            </Text>)
+        })  
+    }
+
+    async componentDidMount() { 
+        this._isMounted = true;   
+        if (this._isMounted) {   
             const id = this.props.route.params.id;  
-            const story:any = await getById(id);   
-            Tts.setDefaultLanguage('fil-PH'); 
-            Tts.setDefaultRate(0.465);   
+            const story:any = await getById(id);    
             const content = this.formatText(story.content.rendered); 
             const wordCount = content.map((item) => item.split(' ').length).reduce((a, b) => (a+b), 0); 
-            const speakingMinutes = wordCount / 130; '130 = average WPM';
+            const speakingMinutes = wordCount / 165; '130 = average WPM';
             const totalSeconds = Math.round(speakingMinutes * 60); 
+            content.forEach((text: string, index: number) => {
+                this.textRefs[index] = text.split(" ").map(() => React.createRef());
+            });
+            const words = content.map((text, index) => {
+                const splitedText = this.splitByText(text, index);
+                return splitedText; 
+            }); 
             const imageUrl = story._embedded.hasOwnProperty('wp:featuredmedia') ? story._embedded['wp:featuredmedia'][0].source_url : '';
             this.setState({
                 title: story.title.rendered,
@@ -68,12 +102,10 @@ class StoryPage extends React.Component<any, any> {
                 imageURL: httpToHttps(imageUrl),
                 category: story._embedded['wp:term'][0][0].name,
                 loading:false, 
-                totalSeconds: totalSeconds,
-                interval: (setInterval(() => { 
-                        this.setState({totalSeconds: this.state.totalSeconds - 1});
-                },1000))
+                words: words,
+                totalSeconds: totalSeconds
                 
-            }); 
+            });  
             this.interstitial = InterstitialAd.createAd(TestIds.INTERSTITIAL);
         }
     }
@@ -81,39 +113,97 @@ class StoryPage extends React.Component<any, any> {
     componentWillUnmount() {
         this._isMounted = false;
         this.setState({speaking: false});
-        Tts.removeAllListeners('tts-start');
-        Tts.removeAllListeners('tts-progress');
+        this.textToSpeach.removeAllListeners('tts-start');
+        this.textToSpeach.removeAllListeners('tts-progress');
+        this.textToSpeach.stop(true); 
     }
 
     async starthandler() {  
-        if (!this.state.speaking) { 
+        if (!this.state.speaking) {  
+            this.textToSpeach.setDefaultLanguage('fil-PH'); 
+            // this.textToSpeach.setDefaultRate(0.65, true)
             this.setState({speaking: true}); 
-            this.state.interval;
-            Tts.getInitStatus().then(() => {   
-                this.state.content.forEach((text: string) => {
-                    console.log(text);
-                    Tts.speak(text); 
+            this.setState({
+                interval: (setInterval(() => { 
+                        this.setState({totalSeconds: this.state.totalSeconds - 1});
+                },1000))
+            })
+            this.textToSpeach.getInitStatus().then((value) => { 
+                this.textToSpeach.speak(this.state.title);
+                this.state.content.forEach((text: string) => { 
+                    this.textToSpeach.speak(text); 
                 }); 
-            });  
-    
-            Tts.addEventListener('tts-start', (event) => { 
-                console.log('tts started');
+            });    
+
+            this.textToSpeach.addEventListener('tts-start', () => {
+                if (!this.state.isTitle) {
+                    this.textRefs[this.state.line].forEach((element: any) => {   
+                        element?.current?.setNativeProps({
+                            style: {
+                                backgroundColor: 'rgba(187,209,251, 0.25)'
+                            }
+                        })
+                    });
+                }
             });
-    
-            Tts.addEventListener('tts-progress', (event) => {
-                console.log(event);
+
+            this.textToSpeach.addEventListener('tts-progress', (event) => {  
+                if (!this.state.isTitle) { 
+                    this.textRefs[this.state.line][this.state.index].current.read = true;
+                    this.textRefs[this.state.line][this.state.index]?.current?.setNativeProps({
+                        style: {
+                            backgroundColor: 'rgba(187,209,251, 0.9)', 
+                        }, 
+                    });  
+                    const offsetY = (this.state.read * 6) + this.height / 6;
+                    this.scrollViewRef?.current.scrollTo({
+                        y: offsetY,
+                        animated: true,
+                    });  
+                    this.setState({
+                        read: this.state.read + 1,
+                        index: this.state.index + 1,
+                        offsetY: offsetY
+                    });
+                    
+                }
+            });
+
+            this.textToSpeach.addEventListener('tts-finish', (event) => { 
+                if (!this.state.isTitle) {
+                    this.textRefs[this.state.line].forEach((element: any) => {   
+                        element?.current?.setNativeProps({
+                            style: {
+                                backgroundColor: 'transparent'
+                            }
+                        })
+                    });
+                    this.setState({line: this.state.line + 1, index:0});
+                } 
+                
+                if (this.state.line === this.state.content.length) {
+                    clearInterval(this.state.interval);
+                    this.setState({speaking: false, totalSeconds: 0})
+                }
+                this.setState({isTitle: false});
             });
         } else {
-            Tts.stop(true); 
+            this.textToSpeach.stop();  
+            this.textToSpeach.removeAllListeners('tts-start');
+            this.textToSpeach.removeAllListeners('tts-progress'); 
             this.setState({speaking: false});
-            clearInterval(this.state.interval());
+            clearInterval(this.state.interval);
         }
     } 
+
+    displayTimer() {
+        return `${(Math.floor(this.state.totalSeconds / 60).toString().padStart(2,'0'))}:${(Math.round(this.state.totalSeconds % 60)).toString().padStart(2, '0')}`;
+    }
 
     render() {
         return (
             <SafeAreaView>
-                <ScrollView>
+                <ScrollView ref={this.scrollViewRef} onScroll={() => this.setState({userScrolling: true})}>
                     { this.state.loading ? <View style={styles.container}><Text style={styles.loading}>Loading...</Text></View> : (
                         <View>
                             {
@@ -130,16 +220,16 @@ class StoryPage extends React.Component<any, any> {
                                 <Text style={styles.category}>Category: {this.state.category}</Text>
                                 <Text style={styles.heading}>{this.state.title}</Text>
                                 <View
-                                    style={{flex:1, flexDirection:'row'}}
+                                    style={{flex:1, flexDirection:'row', alignItems:'center', alignContent:'center', marginBottom:10}}
                                 >
                                     <TouchableOpacity
                                         onPress={() => {this.starthandler()}}
                                         
                                     >
-                                        <Image source={require('../../assets/images/play-button.png')} style={{width:20, height:20}} />
+                                        <Image source={this.state.speaking ? stopButton : playButton} style={{width:22, height:22}} />
                                     </TouchableOpacity>
-                                    <Text style={{marginLeft:7,marginBottom:10}}>
-                                        {this.state.speaking ? (`${(Math.floor(this.state.totalSeconds / 60).toString().padStart(2,'0'))}:${(Math.round(this.state.totalSeconds % 60)).toString().padStart(2, '0')}`) : 'Listen'}
+                                    <Text style={{marginLeft:7, fontSize:theme.FONT_SIZE_EXTRA_SMALL, color: theme.bodyText}}>
+                                        {this.state.speaking ? this.displayTimer() : 'Listen'}
                                     </Text> 
                                 </View>
                                 {this.formatContent()}
@@ -148,6 +238,22 @@ class StoryPage extends React.Component<any, any> {
                         </View>
                     )}
                 </ScrollView>
+                {/* {this.state.offsetY > this.height / 1.5 && (
+                    <View style={{marginTop:'auto', backgroundColor:'white'}}>
+                        <View style={styles.container}>
+                            <View style={styles.footer}>
+                                <TouchableOpacity
+                                    onPress={() => {this.starthandler()}}
+                                    style={{width:'50%', ...styles.flexRow}}
+                                >
+                                    <Image source={this.state.speaking ? stopButton : playButton} style={{width:22, height:22}} /> 
+                                    <Text style={{fontSize:theme.FONT_SIZE_EXTRA_SMALL}}> Playing...</Text>
+                                </TouchableOpacity>
+                                <Text style={{marginLeft:'auto'}}> {this.displayTimer()}</Text>
+                            </View> 
+                        </View>
+                    </View>
+                )} */}
             </SafeAreaView>
         );
     }
@@ -162,6 +268,16 @@ const styles = StyleSheet.create({
         paddingLeft:20,
         paddingRight:20
     },
+    footer: {
+        flexDirection:'row', 
+        paddingBottom: 10, 
+        paddingTop:10, 
+        alignContent:'center'
+    },
+    flexRow: {
+        flexDirection:'row', 
+        alignContent:'center'
+    },
     heading: {
         fontSize:theme.FONT_SIZE_EXTRA_LARGE,
         marginBottom:8,
@@ -169,7 +285,9 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize:theme.FONT_SIZE_REGULAR,
-        color: theme.bodyText
+        color: theme.bodyText,
+        lineHeight: theme.lineHeight,
+        marginBottom:20
     },
     image: {
         width:'100%',
