@@ -169,7 +169,7 @@ class StoryPage extends React.Component<any, any> {
                     this.setState({reset: false});
                 }else {
                     this.titleRef.forEach((element:any) => {
-                        element.current.setNativeProps({
+                        element?.current?.setNativeProps({
                             style: {
                                 backgroundColor: this.readBackground, 
                             }, 
@@ -207,7 +207,7 @@ class StoryPage extends React.Component<any, any> {
                         } 
                     } 
                 }else {
-                    this.titleRef[titleIndex].current.setNativeProps({
+                    this.titleRef[titleIndex]?.current?.setNativeProps({
                         style: {
                             backgroundColor: this.readingBackground, 
                         }, 
