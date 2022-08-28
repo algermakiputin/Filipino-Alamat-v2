@@ -1,4 +1,4 @@
-import React, {useRef} from "react";
+import React from "react";
 import { 
     SafeAreaView,
     Text,
@@ -7,14 +7,17 @@ import {
     TouchableOpacity,
     Image
 } from "react-native";
-import { InterstitialAd, TestIds } from '@react-native-admob/admob'; 
+import { InterstitialAd } from '@react-native-admob/admob'; 
 import theme from '../../../app/styles/theme.styles';
 import {
     get, 
     getAlamatByCategory,
     getRecommendations
 } from '../api/Alamat'; 
- 
+import { httpToHttps } from '../helper/helper'; 
+
+const INTERSTITIAL_ID = 'ca-app-pub-4118987136087583/7614768508';  
+
 class StoriesList extends React.Component<any, any> { 
 
     interstitial:any = '';
@@ -36,21 +39,19 @@ class StoriesList extends React.Component<any, any> {
 
     componentDidMount() { 
         this.fetchStories(); 
-        this.interstitial = InterstitialAd.createAd(TestIds.INTERSTITIAL);
+        this.interstitial = InterstitialAd.createAd(INTERSTITIAL_ID); 
     }
 
     async fetchStories(query = "", page = 1, categoryId = 0) { 
-        let result:any = [];
-        // Fetching stories by category
-        if (this.props.category) {
+        let result:any = []; 
+        if (this.props.category) {  
             let category = this.props.category ? this.props.category : categoryId;
             result = await await getAlamatByCategory(category, query, page); 
-        } 
-        else if (this.props.recommendations)
+        }else if (this.props.recommendations) {
             result = await await getRecommendations(); 
-        else 
-            result = await await get(query); // returning search results
-        
+        } else {
+            result = await await get(query); 
+        } 
         if (this.props.updateRecords) {
             // For pagination
             this.props.updateRecords(result.totalRecords);
@@ -60,6 +61,15 @@ class StoriesList extends React.Component<any, any> {
         this.setState({ stories: result.data, loading: false});
     }
 
+    onpressHandler(id: string, title: string) {  
+        this.props.navigation.navigate('Story', { id: id, title: title });
+        this.setState({clicks: this.state.clicks + 1});
+        if (this.state.clicks % 3 === 0) {
+            this.interstitial.show()
+            this.interstitial = InterstitialAd.createAd(INTERSTITIAL_ID);
+        }
+    }
+
     displayStory() {  
         return this.state.stories.map((item:any, key:number) => {   
             let excerpt = item.excerpt.rendered.replace(/<p>|<\/p>/g, '');
@@ -67,27 +77,20 @@ class StoriesList extends React.Component<any, any> {
             const id = item.id; 
             const imageUrl = item._embedded.hasOwnProperty("wp:featuredmedia") ? item._embedded['wp:featuredmedia'][0].source_url : '';
             const category = item._embedded['wp:term'][0][0].name ?? null;
-             
+            const title = item.title.rendered;
             return <TouchableOpacity
                 key={key}
-                onPress={() => {  
-                    this.props.navigation.navigate('Story', { id: id, title: item.title.rendered });
-                    this.setState({clicks: this.state.clicks + 1});
-                    if (this.state.clicks % 4 === 0) {
-                        this.interstitial.show()
-                        this.interstitial = InterstitialAd.createAd('ca-app-pub-4118987136087583/7614768508');
-                    }
-                }}
+                onPress={() => this.onpressHandler(id, title)}
                 >
                 <View style={styles.listItem}>
                     <View style={styles.imageContainer}>
                         {
-                            imageUrl ? (
+                            Boolean(imageUrl) && (
                                 <Image 
                                     style={styles.image}
-                                    source={{uri: item._embedded['wp:featuredmedia'][0].source_url}}
+                                    source={{uri: httpToHttps(item._embedded['wp:featuredmedia'][0].source_url)}}
                                 />
-                            ) : null
+                            )
                         }
                     </View>
                     <View style={styles.descriptionContainer}>
@@ -98,19 +101,14 @@ class StoriesList extends React.Component<any, any> {
                 </View>
             </TouchableOpacity>
         ) 
-    } 
-
-    render() {
-
-        return ( 
-            <SafeAreaView style={styles.container}>
-                {this.state.loading ? <Text style={styles.label}>Loading...</Text> : null}
+    }  
+    render() { 
+        return (
+            <SafeAreaView style={styles.container}> 
                 {this.props.title? (<Text style={styles.heading}>{this.props.title}</Text>): null}
-                {
-                    this.state.stories.error ? this.networkErrorMsg() : (
-                        this.state.stories.length ? this.displayStory() : <Text style={styles.label}>No story found</Text>
-                    )
-                }
+                { this.state.loading ? <Text style={styles.loader}>Loading...</Text> : (
+                    this.state.stories.length && this.displayStory() || <Text style={styles.label}>No stories found</Text>
+                )}
             </SafeAreaView> 
         );
     }
@@ -166,8 +164,12 @@ const styles = StyleSheet.create({
         marginBottom:5
     }, 
     label: {
-        fontSize: theme.FONT_SIZE_MEDIUM,
+        fontSize: theme.FONT_SIZE_SMALL,
         color: theme.headingColor
+    },
+    loader: {
+        color: theme.bodyText, 
+        fontSize: theme.FONT_SIZE_SMALL
     }
 })
 

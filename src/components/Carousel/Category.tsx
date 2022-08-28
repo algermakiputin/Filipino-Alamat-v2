@@ -11,14 +11,9 @@ import {
 } from "react-native"; 
 import LinearGradient from 'react-native-linear-gradient';
 import { getCategories } from "../api/Alamat"; 
-import { ScrollView } from "react-native-gesture-handler";
-import axios from "axios";
+import { ScrollView } from "react-native-gesture-handler"; 
+import { httpToHttps } from "../helper/helper";
 
-const images = {
-    prutas: require('../../assets/images/categories/fruit.jpg'),
-    hayop: require('../../assets/images/categories/hayop.jpg'),
-    tao: require('../../assets/images/categories/tao.jpg')
-}
 const windowWidth = Dimensions.get('window').width;  
 
 function Category(props:any) {
@@ -53,6 +48,7 @@ function Category(props:any) {
                 <View key={key} style={styles.GenresSectionContainer}> 
                     {
                         value.map((item:any, index:number) => { 
+                            const imgUrl = httpToHttps(item.thumbnail);
                             return (
                                 <TouchableOpacity 
                                     onPress={() => props.navigation.navigate('Category', {name: item.name, id: item.term_id})}
@@ -67,7 +63,7 @@ function Category(props:any) {
                                             { item.thumbnail ? (
                                                 <Image
                                                     source={{
-                                                        uri: item.thumbnail
+                                                        uri: imgUrl
                                                     }}
                                                     style={styles.catImage}
                                                 />
@@ -106,15 +102,13 @@ function Category(props:any) {
                 pagingEnabled={true}   
                 onScroll={(event) => {
                     let currentIndex = Math.round(event.nativeEvent.contentOffset.x / windowWidth);  
-                    //console.log("current index:" + currentIndex); 
                     setIndex(currentIndex); 
                     Animated.event([
                         { 
                             nativeEvent: {
                                 contentOffset: {
                                     x: scrollX
-                                },
-                                
+                                }, 
                             }, 
                         }, 
                     ],

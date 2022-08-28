@@ -12,12 +12,13 @@ class Flags extends React.Component<any,any> {
             visible: false,
             token: '',
         }
+        
     }
 
     componentDidMount() { 
         AsyncStorage.getItem('token').then((token) => {
             this.setState({token: token});
-        });
+        }); 
     }
 
     modalHandler() {
@@ -113,7 +114,8 @@ class Flags extends React.Component<any,any> {
                             fontSize: themeStyles.FONT_SIZE_MEDIUM,
                             borderColor:"#f4f4f5", 
                             alignSelf: 'center',
-                            padding: 15
+                            padding: 15,
+                            color: themeStyles.bodyText
                         }}>Cancel</Text>
                     </TouchableOpacity>
                 </View>
@@ -130,13 +132,18 @@ const styles = StyleSheet.create({
         paddingBottom:10,
         fontSize: themeStyles.FONT_SIZE_SMALL,
         borderBottomWidth: 1,
-        borderColor:'#f4f4f5'
+        borderColor:'#f4f4f5',
+        color: themeStyles.bodyText
     },
     header: {
-        fontSize: themeStyles.FONT_SIZE_LARGE,
+        fontSize: themeStyles.FONT_SIZE_MEDIUM,
         paddingLeft:15,
         paddingRight:15,
         paddingTop:10, 
+        color: themeStyles.headingColor,
+        borderColor:'#f4f4f5',
+        borderBottomWidth: 1,
+        paddingBottom:10,
     },
     container: { 
         borderRadius:5,

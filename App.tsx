@@ -14,10 +14,8 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  Image,
-  View,
-  TouchableOpacity,
-  Alert
+  Image, 
+  TouchableOpacity, 
 } from 'react-native';  
 import HomeScreen from './src/components/screens/HomeScreen';
 import { NavigationContainer, useRoute } from '@react-navigation/native';
@@ -39,12 +37,12 @@ const tabsOptions = (navigation:any) => ({
   headerTintColor:'#fff',
   tabBarLabel:"Home",
   tabBarStyle: {
-    backgroundColor:"#52A0FE"
+    backgroundColor:"#52A0FE",
   },
   headerStyle: {
     backgroundColor:"#52A0FE"
   },
-  headerShown:false
+  headerShown:false,
 });
 
 const TabScreenOptions = (route:any) => ({
@@ -114,10 +112,10 @@ const App = () => {
           name='HomeTabs'
           component={HomeTabs}
           options={({navigation}) => ({  
-            title: 'Ang Alamat',
+            title: 'Filipino Alamat',
             headerStyle: {
               backgroundColor:"#52A0FE",
-            },
+            }, 
             headerTintColor:"#ffffff", 
             headerRight: () => { 
               return(
@@ -174,9 +172,12 @@ const App = () => {
                 }}>
                   <Flags 
                     ref={flagModal} 
-                    title={route?.params?.title}
+                    title={route.params?.title}
                     />
-                  <Text>Report/Flag</Text>
+                  <Image 
+                    style={{width:20,height:20}}
+                    source={require('./src/assets/images/report.png')}
+                  />
               </TouchableOpacity>
             }
           })}
