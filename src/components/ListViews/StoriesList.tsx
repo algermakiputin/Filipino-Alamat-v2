@@ -100,13 +100,8 @@ class StoriesList extends React.Component<any, any> {
                     </View>
                 </View>
             </TouchableOpacity>
-        }); 
-    }
-
-    networkErrorMsg() {
-        return <Text>{this.state.stories.message}</Text>
-    }
-
+        ) 
+    }  
     render() { 
         return (
             <SafeAreaView style={styles.container}> 
@@ -114,7 +109,7 @@ class StoriesList extends React.Component<any, any> {
                 { this.state.loading ? <Text style={styles.loader}>Loading...</Text> : (
                     this.state.stories.length && this.displayStory() || <Text style={styles.label}>No stories found</Text>
                 )}
-            </SafeAreaView>
+            </SafeAreaView> 
         );
     }
 }
