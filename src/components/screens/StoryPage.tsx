@@ -26,9 +26,11 @@ class StoryPage extends React.Component<any, any> {
     _isMounted = false;
     textToSpeach = Tts;
     textRefs: any = []; 
+    titleRef: any = [];
     scrollViewRef: any = React.createRef();
     height = Dimensions.get('window').height;
-     
+    readBackground = 'rgba(187,209,251, 0.25)';
+    readingBackground = 'rgba(187,209,251, 0.9)';
     constructor(props:any) {
         super(props)
         this.state = {
@@ -37,6 +39,7 @@ class StoryPage extends React.Component<any, any> {
             imageURL: '',
             category: '',
             loading: true,
+            readingTime: 0,
             totalSeconds: 0,
             speaking: false,
             strippedContent: '',
@@ -48,7 +51,9 @@ class StoryPage extends React.Component<any, any> {
             index: 0,
             userScrolling: false,
             isTitle: true,
-            offsetY: 0
+            offsetY: 0,
+            direction : 'down',
+            reset: false,
         }   
     }
 
@@ -88,7 +93,11 @@ class StoryPage extends React.Component<any, any> {
             const wordCount = content.map((item) => item.split(' ').length).reduce((a, b) => (a+b), 0); 
             const speakingMinutes = wordCount / 165; '130 = average WPM';
             const totalSeconds = Math.round(speakingMinutes * 60); 
-            content.forEach((text: string, index: number) => {
+            const title = story.title.rendered; 
+            title.split(" ").forEach((word: string, index: number) => {
+                this.titleRef[index] = React.createRef();
+            });
+            content?.forEach((text: string, index: number) => {
                 this.textRefs[index] = text.split(" ").map(() => React.createRef());
             });
             const words = content.map((text, index) => {
@@ -97,13 +106,14 @@ class StoryPage extends React.Component<any, any> {
             }); 
             const imageUrl = story._embedded.hasOwnProperty('wp:featuredmedia') ? story._embedded['wp:featuredmedia'][0].source_url : '';
             this.setState({
-                title: story.title.rendered,
+                title: title.split(" "),
                 content: content,
                 imageURL: httpToHttps(imageUrl),
                 category: story._embedded['wp:term'][0][0].name,
                 loading:false, 
                 words: words,
-                totalSeconds: totalSeconds
+                totalSeconds: totalSeconds,
+                readingTime: totalSeconds
                 
             });  
             this.interstitial = InterstitialAd.createAd(TestIds.INTERSTITIAL);
@@ -113,15 +123,30 @@ class StoryPage extends React.Component<any, any> {
     componentWillUnmount() {
         this._isMounted = false;
         this.setState({speaking: false});
-        this.textToSpeach.removeAllListeners('tts-start');
-        this.textToSpeach.removeAllListeners('tts-progress');
+        this.unMountTts();
         this.textToSpeach.stop(true); 
     }
 
-    async starthandler() {  
+    unMountTts() {
+        this.textToSpeach.removeAllListeners('tts-start');
+        this.textToSpeach.removeAllListeners('tts-progress'); 
+        this.textToSpeach.removeAllListeners('tts-finish');
+    }
+
+    async starthandler() {   
+        const setReadColor = (color: string) => {
+            this.textRefs[this.state.line]?.forEach((element: any) => {   
+                element?.current?.setNativeProps({
+                    style: {
+                        backgroundColor: color
+                    }
+                })
+            });
+        }
         if (!this.state.speaking) {  
             this.textToSpeach.setDefaultLanguage('fil-PH'); 
-            // this.textToSpeach.setDefaultRate(0.65, true)
+            Tts.setDefaultRate(0.45);
+            Tts.setDefaultPitch(1.15);  
             this.setState({speaking: true}); 
             this.setState({
                 interval: (setInterval(() => { 
@@ -129,69 +154,118 @@ class StoryPage extends React.Component<any, any> {
                 },1000))
             })
             this.textToSpeach.getInitStatus().then((value) => { 
-                this.textToSpeach.speak(this.state.title);
-                this.state.content.forEach((text: string) => { 
+                this.textToSpeach.speak(this.state.title. join(' '));
+                this.state.content?.forEach((text: string) => { 
                     this.textToSpeach.speak(text); 
                 }); 
             });    
 
+            let titleIndex = 0;
+            let doneTitle = false;
             this.textToSpeach.addEventListener('tts-start', () => {
+                this.setState({reset:false});
                 if (!this.state.isTitle) {
-                    this.textRefs[this.state.line].forEach((element: any) => {   
-                        element?.current?.setNativeProps({
+                    setReadColor(this.readBackground);
+                    this.setState({reset: false});
+                }else {
+                    this.titleRef.forEach((element:any) => {
+                        element.current.setNativeProps({
                             style: {
-                                backgroundColor: 'rgba(187,209,251, 0.25)'
-                            }
-                        })
+                                backgroundColor: this.readBackground, 
+                            }, 
+                        });
                     });
                 }
-            });
-
-            this.textToSpeach.addEventListener('tts-progress', (event) => {  
+            }); 
+            this.textToSpeach.addEventListener('tts-progress', () => {  
                 if (!this.state.isTitle) { 
-                    this.textRefs[this.state.line][this.state.index].current.read = true;
-                    this.textRefs[this.state.line][this.state.index]?.current?.setNativeProps({
+                    if (this.textRefs.hasOwnProperty(this.state.line)) {
+                        if (this.textRefs[this.state.line]?.hasOwnProperty(this.state.index)) {  
+                            this.textRefs[this.state.line][this.state.index].current.read = true;
+                            this.textRefs[this.state.line][this.state.index - 1]?.current?.setNativeProps({
+                                style: {
+                                    backgroundColor: this.readBackground, 
+                                }, 
+                            });
+                            this.textRefs[this.state.line][this.state.index]?.current?.setNativeProps({
+                                style: {
+                                    backgroundColor: this.readingBackground, 
+                                }, 
+                            });  
+                            const offsetY = (this.state.read * 6) + this.height / 6; 
+                            if (this.state.direction === 'down') {
+                                this.scrollViewRef?.current.scrollTo({
+                                    y: offsetY,
+                                    animated: true,
+                                });
+                            }  
+                            this.setState({
+                                read: this.state.read + 1,
+                                index: this.state.index + 1,
+                                offsetY: offsetY
+                            });
+                        } 
+                    } 
+                }else {
+                    this.titleRef[titleIndex].current.setNativeProps({
                         style: {
-                            backgroundColor: 'rgba(187,209,251, 0.9)', 
+                            backgroundColor: this.readingBackground, 
                         }, 
-                    });  
-                    const offsetY = (this.state.read * 6) + this.height / 6;
-                    this.scrollViewRef?.current.scrollTo({
-                        y: offsetY,
-                        animated: true,
-                    });  
-                    this.setState({
-                        read: this.state.read + 1,
-                        index: this.state.index + 1,
-                        offsetY: offsetY
-                    });
-                    
+                    }); 
+                    titleIndex++; 
                 }
             });
 
-            this.textToSpeach.addEventListener('tts-finish', (event) => { 
+            this.textToSpeach.addEventListener('tts-finish', () => { 
+                console.log('is finished');
+                if (!doneTitle) {
+                    this.titleRef.forEach((element:any) => {
+                        element.current.setNativeProps({
+                            style: {
+                                backgroundColor: 'transparent', 
+                            }, 
+                        });
+                    });
+                } 
                 if (!this.state.isTitle) {
-                    this.textRefs[this.state.line].forEach((element: any) => {   
+                    this.textRefs[this.state.line]?.forEach((element: any) => {   
                         element?.current?.setNativeProps({
                             style: {
                                 backgroundColor: 'transparent'
                             }
                         })
-                    });
-                    this.setState({line: this.state.line + 1, index:0});
-                } 
-                
+                    });   
+                    this.setState({line: this.state.line + 1, index:0}); 
+                }  
                 if (this.state.line === this.state.content.length) {
                     clearInterval(this.state.interval);
                     this.setState({speaking: false, totalSeconds: 0})
-                }
-                this.setState({isTitle: false});
+                } 
+                doneTitle = true;
+                this.setState({isTitle: false}); 
             });
         } else {
             this.textToSpeach.stop();  
-            this.textToSpeach.removeAllListeners('tts-start');
-            this.textToSpeach.removeAllListeners('tts-progress'); 
-            this.setState({speaking: false});
+            this.unMountTts();
+            this.setState({
+                speaking: false, 
+                totalSeconds: this.state.readingTime,
+                read: 0,
+                line: 0,
+                index: 0,
+                isTitle: true,
+                reset: true
+            });
+            this.textRefs?.forEach((elements: any) => {   
+                elements.forEach((element: any) => {
+                    element.current.read = false;
+                    element?.current?.setNativeProps({
+                        style: {
+                            backgroundColor: 'transparent'
+                        }
+                    });
+                })
+            }); 
             clearInterval(this.state.interval);
         }
     } 
@@ -200,10 +274,18 @@ class StoryPage extends React.Component<any, any> {
         return `${(Math.floor(this.state.totalSeconds / 60).toString().padStart(2,'0'))}:${(Math.round(this.state.totalSeconds % 60)).toString().padStart(2, '0')}`;
     }
 
+    displayTitle() { 
+        return this.state.title.map((str: string, index: number) => (<Text ref={(el) => this.titleRef[index].current = el} key={index}>{str}{' '}</Text>));
+    }
+
     render() {
         return (
             <SafeAreaView>
-                <ScrollView ref={this.scrollViewRef} onScroll={() => this.setState({userScrolling: true})}>
+                <ScrollView ref={this.scrollViewRef} onScroll={(event) => {
+                    var currentOffset = event.nativeEvent.contentOffset.y;
+                    var direction = currentOffset > this.state.offsetY ? 'down' : 'up';
+                    this.setState({offsetY: currentOffset, direction: direction}) 
+                }}>
                     { this.state.loading ? <View style={styles.container}><Text style={styles.loading}>Loading...</Text></View> : (
                         <View>
                             {
@@ -218,7 +300,7 @@ class StoryPage extends React.Component<any, any> {
                             } 
                             <View style={styles.container}>  
                                 <Text style={styles.category}>Category: {this.state.category}</Text>
-                                <Text style={styles.heading}>{this.state.title}</Text>
+                                <Text style={styles.heading}>{this.displayTitle()}</Text>
                                 <View
                                     style={{flex:1, flexDirection:'row', alignItems:'center', alignContent:'center', marginBottom:10}}
                                 >
@@ -237,23 +319,7 @@ class StoryPage extends React.Component<any, any> {
                             <AdmobBanner />
                         </View>
                     )}
-                </ScrollView>
-                {/* {this.state.offsetY > this.height / 1.5 && (
-                    <View style={{marginTop:'auto', backgroundColor:'white'}}>
-                        <View style={styles.container}>
-                            <View style={styles.footer}>
-                                <TouchableOpacity
-                                    onPress={() => {this.starthandler()}}
-                                    style={{width:'50%', ...styles.flexRow}}
-                                >
-                                    <Image source={this.state.speaking ? stopButton : playButton} style={{width:22, height:22}} /> 
-                                    <Text style={{fontSize:theme.FONT_SIZE_EXTRA_SMALL}}> Playing...</Text>
-                                </TouchableOpacity>
-                                <Text style={{marginLeft:'auto'}}> {this.displayTimer()}</Text>
-                            </View> 
-                        </View>
-                    </View>
-                )} */}
+                </ScrollView> 
             </SafeAreaView>
         );
     }
