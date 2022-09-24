@@ -9,17 +9,17 @@ export class AppReview {
             GooglePackageName:"com.angalamat", 
             OtherAndroidURL: appUrl,
             preferredAndroidMarket: AndroidMarket.Google,
-            preferInApp:false,
+            preferInApp:true,
             openAppStoreIfInAppFails:true,
             fallbackPlatformURL: appUrl,
         }
     }
 
     rateApp() {
-        Rate.rate(this.options, (success, error) => {
+        Rate.rate(this.options, (success, error) => { 
             if (success) {
                 console.log('rated success');
-                AsyncStorage.setItem("ratedToday", "true");
+                AsyncStorage.setItem("ratedDate", new Date().toISOString());
             }else{
                 console.log(error);
             }

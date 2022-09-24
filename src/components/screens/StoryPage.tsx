@@ -90,18 +90,29 @@ class StoryPage extends React.Component<any, any> {
         })  
     }
 
-    async rateAppHandler() {
+    timeDiff(date: string) {
+        const startDate = new Date(date);
+        const today = new Date(); 
+        const difference = today.getTime() - startDate.getTime();
+        const totalDays = Math.ceil(difference / (1000 * 3600 * 24)); 
+        return totalDays;
+    }
+
+    async rateAppHandler() {   
         AsyncStorage.getItem("installationDate").then((result) => {
             if (result) {
-                const installationDate = new Date("2022-09-22").getTime();
-                const today = new Date().getTime();
-                const difference = today - installationDate;
-                const TotalDays = Math.ceil(difference / (1000 * 3600 * 24));  
-                if (TotalDays) {
-                    AsyncStorage.getItem("ratedToday").then(result => {
-                        if (!result) {
-                            const review = new AppReview();
-                            review.rateApp();
+                const totalDays = this.timeDiff(result);
+                if (totalDays > 4) {
+                    AsyncStorage.getItem("ratedDate").then(response => { 
+                        console.log(response);
+                        if (!response) { 
+                            this.prepareRateApp();
+                        }else {  
+                            const daysDiff = this.timeDiff(response);  
+                            if (daysDiff > 1) {
+                                console.log('opening');
+                                this.prepareRateApp();
+                            }
                         }
                     });
                 }
@@ -109,6 +120,12 @@ class StoryPage extends React.Component<any, any> {
         }); 
     }
     
+    prepareRateApp() {
+        setTimeout(function() {
+            const review = new AppReview();
+            review.rateApp();
+        }, 20000);
+    }
 
     async componentDidMount() { 
         this._isMounted = true;   
