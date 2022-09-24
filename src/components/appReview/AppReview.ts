@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-community/async-storage';
 import Rate, { AndroidMarket } from 'react-native-rate'
 
 export class AppReview {
@@ -17,7 +18,8 @@ export class AppReview {
     rateApp() {
         Rate.rate(this.options, (success, error) => {
             if (success) {
-                console.log('rated');
+                console.log('rated success');
+                AsyncStorage.setItem("ratedToday", "true");
             }else{
                 console.log(error);
             }

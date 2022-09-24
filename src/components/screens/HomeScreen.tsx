@@ -12,6 +12,7 @@ import StoriesList from "../ListViews/StoriesList";
 import theme from "../../../app/styles/theme.styles";  
 import Category from "../Carousel/Category"; 
 import { get } from '../api/Alamat';
+import AsyncStorage from "@react-native-community/async-storage";
 
 const screenHeight = Dimensions.get('screen').height;
 
@@ -24,12 +25,15 @@ class HomeScreen extends React.Component<any, any> {
         }
     } 
 
-    componentDidMount() {
+    componentDidMount() { 
+        AsyncStorage.getItem("installationDate").then((result: any) => { 
+            if (!result) return AsyncStorage.setItem('installationDate', new Date().toISOString());
+        })
         const fetch = async() => {
             return get();
         }
 
-        fetch().catch(err => {
+        return fetch().catch(err => {
             this.setState({offline: false});
         })
     }

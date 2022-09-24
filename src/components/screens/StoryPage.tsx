@@ -16,6 +16,8 @@ import { AdmobBanner } from "../Admob";
 import { InterstitialAd, TestIds } from "@react-native-admob/admob";
 import { httpToHttps } from "../helper/helper";
 import Tts from 'react-native-tts'; 
+import { AppReview } from "../appReview/AppReview";
+import AsyncStorage from "@react-native-community/async-storage";
 
 const stopButton = require('../../assets/images/stop.png');
 const playButton = require('../../assets/images/play-button.png');
@@ -88,9 +90,31 @@ class StoryPage extends React.Component<any, any> {
         })  
     }
 
+    async rateAppHandler() {
+        AsyncStorage.getItem("installationDate").then((result) => {
+            if (result) {
+                const installationDate = new Date("2022-09-22").getTime();
+                const today = new Date().getTime();
+                const difference = today - installationDate;
+                const TotalDays = Math.ceil(difference / (1000 * 3600 * 24));  
+                if (TotalDays) {
+                    AsyncStorage.getItem("ratedToday").then(result => {
+                        if (!result) {
+                            const review = new AppReview();
+                            review.rateApp();
+                        }
+                    });
+                }
+            }
+        }); 
+    }
+    
+
     async componentDidMount() { 
         this._isMounted = true;   
-        if (this._isMounted) {   
+        
+        if (this._isMounted) {  
+            this.rateAppHandler(); 
             const id = this.props.route.params.id;  
             const story:any = await getById(id);    
             const content = this.formatText(story.content.rendered); 
@@ -220,8 +244,7 @@ class StoryPage extends React.Component<any, any> {
                 }
             });
 
-            this.textToSpeach.addEventListener('tts-finish', () => { 
-                console.log('is finished');
+            this.textToSpeach.addEventListener('tts-finish', () => {  
                 if (!doneTitle) {
                     this.titleRef.forEach((element:any) => {
                         element.current.setNativeProps({
