@@ -66,7 +66,7 @@ class StoryPage extends React.Component<any, any> {
     splitByText(text: any, count: number) {   
         return text.split(" ").map((text: string, index: number) => {   
             const word = {
-                text: <Text ref={(el) => (this.textRefs[count][index].current = el)} key={this.state.count} style={{alignSelf: 'flex-start'}}>{text} </Text>, 
+                text: <Text ref={(el) => (this.textRefs[count][index].current = el)} key={this.state.count} style={{alignSelf: 'flex-start'}}>{this.replaceHTMLEntity(text)} </Text>, 
                 count: this.state.count, 
             };
             this.setState({count: this.state.count + 1});
@@ -74,12 +74,16 @@ class StoryPage extends React.Component<any, any> {
         }); 
     }
 
-    formatContent() {  
+    replaceHTMLEntity(text:string) {
+        return text.replace(/&#8217;/g, `'`)
+            .replace(/&#8220;/g, `“`)
+            .replace(/&#8221;/g, `”`);
+    }
+
+    formatContent() {   
         return this.state.words.map((text:any, index:number) => {    
             return (<Text style={styles.text} key={index}>
-                {text.map((value:any) => {
-                return value.text;
-            })}
+                {text.map((value:any) => value.text)}
             </Text>)
         })  
     }
